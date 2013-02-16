@@ -1,0 +1,8 @@
+# 1 "options"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "options"
+EXE_INC = -I$(LIB_SRC)/turbulenceModels/compressible/turbulenceModel -I$(LIB_SRC)/thermophysicalModels/specie/lnInclude -I$(LIB_SRC)/thermophysicalModels/reactionThermo/lnInclude -I$(LIB_SRC)/thermophysicalModels/basic/lnInclude -I$(LIB_SRC)/thermophysicalModels/chemistryModel/lnInclude -I$(LIB_SRC)/ODE/lnInclude -I$(LIB_SRC)/finiteVolume/lnInclude -I$(LIB_SRC)/combustionModels/lnInclude
+# 10 "options"
+
+EXE_LIBS = -lcompressibleTurbulenceModel -lcompressibleRASModels -lcompressibleLESModels -lreactionThermophysicalModels -lspecie -lbasicThermophysicalModels -lchemistryModel -lODE -lfiniteVolume -lcombustionModels

@@ -1,0 +1,99 @@
+tmp<fv::convectionScheme<scalar> > mvConvection
+(
+    fv::convectionScheme<scalar>::New
+    (
+        mesh,
+        fields,
+        phi,
+        mesh.divScheme("div(phi,Yi_h)")
+    )
+);
+
+{
+    label inertIndex = -1;
+    volScalarField Yt = 0.0*Y[0];
+
+    for (label i=0; i<Y.size(); i++)
+    {
+        if (Y[i].name() != inertSpecie)
+        {
+            volScalarField& Yi = Y[i];
+
+            surfaceScalarField Yi_pos =
+    	        fvc::interpolate(Yi, pos, "reconstruct(Yi)");
+            surfaceScalarField Yi_neg =
+                fvc::interpolate(Yi, neg, "reconstruct(Yi)");
+
+	    surfaceScalarField phiYi("phiYi", aphiv_pos*rho_pos*Yi_pos + aphiv_neg*rho_neg*Yi_neg); // phiYi=rho*U*Yi
+
+	    //volScalarField rhoYi = rho*Yi;
+volScalarField rhoYi
+(
+    IOobject
+    (
+         "rhoYi",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    rho*Yi
+);
+/*(
+    IOobject
+    (
+         "rhoYi",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    rho*Yi
+);*/
+
+//	    Info<< "before species equation" << endl;
+// solve( fvm::ddt(rhoYi) + fvc::div(phiYi) - fvc::laplacian(muEff,Yi) == kappa*chemistry.RR(i) )
+            solve
+            (
+		fvm::ddt(rhoYi)
+	      + fvc::div(phiYi)
+	      - fvc::laplacian(muEff,Yi)
+              == kappa*chemistry.RR(i)
+            );
+// 	    Info<< "after species equation" << endl;
+/*            Yi.dimensionedInternalField() =
+            	rhoYi.dimensionedInternalField()
+	        /Yi.dimensionedInternalField(); // This is done so that we can use conventional boundary conditions applied for U
+	    Info<< "after Yi.dimensionedInternalField()" << endl;
+            Yi.correctBoundaryConditions(); // interpolate U to boundary based on internal values?
+	    Info<< "after Yi.correctBoundaryConditions()" << endl;
+            rhoYi.boundaryField() = rho.boundaryField()*Yi.boundaryField();
+	    Info<< "after Yi.correctBoundaryConditions()" << endl;*/
+	    Yi = rhoYi/rho;
+	    Yi.correctBoundaryConditions();
+
+            rhoYi.boundaryField() = rho.boundaryField()*Yi.boundaryField();
+   
+	   
+/*            solve
+            (
+                fvm::ddt(rho, Yi)
+              + mvConvection->fvmDiv(phi, Yi)
+              - fvm::laplacian(turbulence->muEff(), Yi)
+             == kappa*chemistry.RR(i)
+	     ,
+                mesh.solver("Yi")
+            );*/
+
+            Yi.max(0.0);
+            Yt += Yi;
+        }
+        else
+        {
+            inertIndex = i;
+        }
+    }
+
+    Y[inertIndex] = scalar(1) - Yt;
+    Y[inertIndex].max(0.0);
+}
