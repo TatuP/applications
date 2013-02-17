@@ -133,3 +133,27 @@ volScalarField YinertNeg
     mesh,
     dimensionedScalar("YinertNeg", dimEnergy/dimEnergy, 0.0)
 );
+volVectorField rhoUA
+(
+    IOobject
+    (
+        "rhoUA",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    0.02e-2*(0.176022-0.1611)*1e-2*rho*U*0.0
+);
+volVectorField diffRhoU
+(
+    IOobject
+    (
+        "diffRhoU",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    rho*U*0.0
+);

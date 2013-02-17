@@ -601,6 +601,7 @@ singleStepReactingFoam.dep: YEqn.H
 singleStepReactingFoam.dep: hsEqn.H
 singleStepReactingFoam.dep: pEqn.H
 singleStepReactingFoam.dep: $(WM_PROJECT_DIR)/src/finiteVolume/lnInclude/compressibleContinuityErrs.H
+singleStepReactingFoam.dep: targetPhi.H
 $(OBJECTS_DIR)/singleStepReactingFoam.o: $(EXE_DEP)
 $(OBJECTS_DIR)/singleStepReactingFoam.o:
 	@SOURCE_DIR=.

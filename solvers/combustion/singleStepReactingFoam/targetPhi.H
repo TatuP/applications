@@ -3,7 +3,7 @@
 	scalar targetPhiCa = 0.7e-5;//2.28e-6;// target phi for carrier channel (lower)
 	scalar targetRho = 5.0;
 
-	dimensionedScalar tau("tau",dimensionSet(0,0,1,0,0,0,0),20.0*runTime.deltaT().value()); // relaxation time scale
+	dimensionedScalar tau("tau",dimensionSet(0,0,1,0,0,0,0),8.0*runTime.deltaT().value()); // relaxation time scale
 	scalar xRealInlet = -1.56e-2; // position of the "real" inlet, where the converging part of the nozzle starts
 	scalar yMinF = 0.0008; // 0.0010; // y-range where fuelAir channel is 
 	scalar yMaxF = 0.00282;// 

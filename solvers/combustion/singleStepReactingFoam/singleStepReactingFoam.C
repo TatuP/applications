@@ -85,6 +85,7 @@ int main(int argc, char *argv[])
             }
         }
 
+	#include "targetPhi.H"
         runTime.write();
 
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
