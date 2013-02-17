@@ -11,7 +11,7 @@
 	volScalarField x = mesh.C().component(0);
 	volScalarField y = mesh.C().component(1);
 	scalar xMin = min(x).value(); // minimum value in the mesh (where the actual inlet is)
-	scalar xMax = xMin + 0.3*(xRealInlet-xMin); // range where the phi correction is done (30 % from the inlet)
+	scalar xMax = xMin + 0.8*(xRealInlet-xMin); // range where the phi correction is done (30 % from the inlet)
         //#include "targetRho.H"
 	diffRhoU = rho*U*0.0; // initialize the difference between current rho*U and target rho*U (in createFields.H)
 	volVectorField sigmaDiffRhoU = diffRhoU; // sigma*diffRhoU
@@ -19,7 +19,7 @@
 	forAll(x,i) // loop through all cells
 	{
 		scalar xi = x[i]; // x position of cell i
-		scalar AcellFace = 0.02e-2*(0.176022-0.1611)*1e-2; //mesh.magSf()[i]; // cell face area (in fuelAir channel)
+		scalar AcellFace = 0.02e-2*(0.2004695-0.0919226)*1e-2; //mesh.magSf()[i]; // cell face area (in fuelAir channel)
 		rhoUA[i].component(0) = rho[i]*U[i].component(0)*AcellFace;
 		if (xi < xMax) // consider cells that are on the left side of xMax
 		{

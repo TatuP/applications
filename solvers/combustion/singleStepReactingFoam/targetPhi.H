@@ -1,7 +1,7 @@
 	scalar targetPhiF = 0.1*14.1980e-5;//9.198e-5; // target phi value per cell for fuelAir channel (two cells in y direction)
 	scalar targetPhiCo = 0.1*5.2791e-5;//5.2791e-5;// target phi for cooler channel (upper)
-	scalar targetPhiCa = 0.7e-5;//2.28e-6;// target phi for carrier channel (lower)
-	scalar targetRho = 5.0;
+	scalar targetPhiCa = 0.7e-5;//2.28e-6;// Target phi for carrier channel (lower)
+	scalar targetRho = 5.1;
 
 	dimensionedScalar tau("tau",dimensionSet(0,0,1,0,0,0,0),8.0*runTime.deltaT().value()); // relaxation time scale
 	scalar xRealInlet = -1.56e-2; // position of the "real" inlet, where the converging part of the nozzle starts
