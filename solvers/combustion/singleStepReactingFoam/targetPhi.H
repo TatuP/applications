@@ -1,4 +1,4 @@
-	scalar targetPhiF = 0.1*9.1980e-5;//9.198e-5; // target phi value per cell for fuelAir channel (two cells in y direction)
+	scalar targetPhiF = 0.1*14.1980e-5;//9.198e-5; // target phi value per cell for fuelAir channel (two cells in y direction)
 	scalar targetPhiCo = 0.1*5.2791e-5;//5.2791e-5;// target phi for cooler channel (upper)
 	scalar targetPhiCa = 0.7e-5;//2.28e-6;// target phi for carrier channel (lower)
 	scalar targetRho = 5.0;
