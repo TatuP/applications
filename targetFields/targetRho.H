@@ -13,5 +13,7 @@ volScalarField sigmaDiffRho(rho*0.0);
 	}
 	solve
 	(
-		fvm::ddt(rho) + fvc::div(phi) == -sigmaDiffRho/tau
+		fvm::ddt(rho) - fvc::ddt(rho)
+		//+ fvc::div(phi) 
+		== -sigmaDiffRho/tau
 	);

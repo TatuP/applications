@@ -31,7 +31,8 @@ Description
 
 #include "fvCFD.H"
 #include "turbulenceModel.H"
-#include "psiChemistryCombustionModel.H"
+//#include "psiChemistryCombustionModel.H"
+#include "psiCombustionModel.H"
 #include "multivariateScheme.H"
 #include "pimpleControl.H"
 
@@ -84,6 +85,7 @@ int main(int argc, char *argv[])
             }
         }
 
+	#include "$FOAM_USER_APP/targetFields/targetPhi.H"
         runTime.write();
 
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"

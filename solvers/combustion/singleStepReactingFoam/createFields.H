@@ -157,3 +157,15 @@ volVectorField diffRhoU
     ),
     rho*U*0.0
 );
+volScalarField diffT
+(
+    IOobject
+    (
+        "diffT",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    T*0.0
+);

@@ -292,7 +292,7 @@ int main(int argc, char *argv[])
 
         turbulence->correct();
 
-	#include "targetPhi.H"
+	#include "/home/tptatu/OpenFOAM/tptatu-2.1.1/applications/targetFields/targetPhi.H"
         runTime.write();
 
 

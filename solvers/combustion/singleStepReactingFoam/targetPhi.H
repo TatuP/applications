@@ -2,6 +2,9 @@
 	scalar targetPhiCo = 0.1*5.2791e-5;//5.2791e-5;// target phi for cooler channel (upper)
 	scalar targetPhiCa = 0.7e-5;//2.28e-6;// Target phi for carrier channel (lower)
 	scalar targetRho = 5.1;
+	//dimensionedScalar targetT("targetT",dimensionSet(0,0,0,1,0,0,0),320.0);
+	scalar targetT = 320.0;
+	//dimensionedScalar unitT("unitT",dimensionSet(0,0,0,1,0,0,0),1.0);
 
 	dimensionedScalar tau("tau",dimensionSet(0,0,1,0,0,0,0),8.0*runTime.deltaT().value()); // relaxation time scale
 	scalar xRealInlet = -1.56e-2; // position of the "real" inlet, where the converging part of the nozzle starts
@@ -11,12 +14,14 @@
 	volScalarField x = mesh.C().component(0);
 	volScalarField y = mesh.C().component(1);
 	scalar xMin = min(x).value(); // minimum value in the mesh (where the actual inlet is)
-	scalar xMax = xMin + 0.3*(xRealInlet-xMin); // range where the phi correction is done (30 % from the inlet)
+	scalar xMax = xMin + 0.7*(xRealInlet-xMin); // range where the phi correction is done (30 % from the inlet)
         //#include "targetRho.H"
 	diffRhoU = rho*U*0.0; // initialize the difference between current rho*U and target rho*U (in createFields.H)
 	volVectorField sigmaDiffRhoU = diffRhoU; // sigma*diffRhoU
+	volScalarField sigmaDiffT = T*0.0;
 	rhoUA = diffRhoU;
 	//volScalarField sigmaDiffRho(rho*0.0);
+	//Info << "before cell loop" << endl;
 	forAll(x,i) // loop through all cells
 	{
 		scalar xi = x[i]; // x position of cell i
@@ -42,6 +47,9 @@
 				diffRhoUi -= targetPhiCa/AcellFace;
 			}
 			diffRhoU[i].component(0) = diffRhoUi; // difference between current and target rho*Ux
+			diffT[i] = (T[i]-targetT);
+
+			sigmaDiffT[i] = sigma*diffT[i];
 			sigmaDiffRhoU[i].component(0) = sigma*diffRhoUi; // the weighted difference
 			//sigmaDiffRho[i] = sigma*(rho[i] - targetRho);
 		}
@@ -56,5 +64,21 @@
 		//+ fvc::grad(p)		
 	     	== -sigmaDiffRhoU/tau
 	);
-
+	volScalarField muEff(turbulence->muEff());
+	//scalar Pr = 0.75;
+	//volScalarField k("k", thermo.Cp()*muEff/Pr);//thermo.Cp()*muEff/Pr);
+	//Info << "before hs solve" << endl;
+        solve
+        (
+                fvm::ddt(rho, hs) - fvc::ddt(rho, hs)//fvm::ddt(rho, e) - fvc::ddt(rho, e)
+              //- fvm::laplacian(turbulence->alphaEff(), hs) // alphaEff = alpha + alphat 
+              //+ fvc::laplacian(turbulence->alphaEff(), hs)  // "remove" the contribution from the inviscid predictor
+              //- fvc::laplacian(k, T)   // originally minus sign!
+	      == -rho*thermo.Cp()*sigmaDiffT/tau
+              //- fvc::laplacian(k, TrPsi)
+              //== combustion->Sh()// - shPredi
+        );
+        thermo.correct();
+	#include "targetRho.H"
+        //rhoH = rho*(hs + 0.5*magSqr(U));
 	//rhoU = rho*U;
