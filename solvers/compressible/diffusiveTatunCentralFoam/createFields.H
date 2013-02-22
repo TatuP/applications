@@ -126,6 +126,8 @@ volScalarField rhoH
     ),
     rho*(hs + 0.5*magSqr(U))
 );
+
+
 // tatu end
 surfaceScalarField pos
 (
@@ -288,7 +290,7 @@ volScalarField YinertNeg // negative inert mass fraction field for debugging
     rho*U
 );*/
 
-volVectorField rhoUA
+/*volVectorField rhoUA
 (
     IOobject
     (
@@ -323,5 +325,54 @@ volScalarField diffT
         IOobject::AUTO_WRITE
     ),
     T*0.0
+);*/
+volScalarField Mach
+(
+    IOobject
+    (
+        "Mach",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("Mach", dimless, 0.0)
+);
+volScalarField soundSpeed
+(
+    IOobject
+    (
+        "soundSpeed",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    mag(U)*0.0
+);
+volScalarField h 
+(
+    IOobject
+    (
+        "h",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    0.5*magSqr(U)*0.0
+);
+volScalarField K 
+(
+    IOobject
+    (
+        "K",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    0.5*magSqr(U)
 );
 // tatu end

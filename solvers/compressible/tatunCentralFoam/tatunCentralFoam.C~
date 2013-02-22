@@ -283,7 +283,7 @@ int main(int argc, char *argv[])
             rhoH = rho*(hs + 0.5*magSqr(U));
         }
 
-
+	#include "targetPhi.H"
 
         p.dimensionedInternalField() =
             rho.dimensionedInternalField()
@@ -293,7 +293,6 @@ int main(int argc, char *argv[])
 
         turbulence->correct();
 
-	#include "targetPhi.H"
         runTime.write();
 
 

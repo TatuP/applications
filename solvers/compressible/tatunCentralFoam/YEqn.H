@@ -89,9 +89,8 @@ tmp<fv::convectionScheme<scalar> > mvConvection
             solve
             (
 		fvm::ddt(rho,Yi) - fvc::ddt(rho,Yi)
-	      + fvm::div(phi,Yi)
-	      - fvc::div(phi,Yi)
-	      - fvm::laplacian(muEff/0.7,Yi)
+	      + fvm::div(phi,Yi) - fvc::div(phi,Yi)
+	      - fvm::laplacian(muEff,Yi)
 	        == combustion->R(Yi) //- combustion->R(YiOld)
 	      ,
 		mesh.solver("Yi")	

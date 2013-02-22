@@ -1,5 +1,14 @@
 Info<< "Creating combustion model\n" << endl;
 
+/*
+autoPtr<combustionModels::psiChemistryCombustionModel> combustion
+(
+	combustionModels::psiChemistryCombustionModel::New
+	(
+		mesh
+	)
+);
+
 autoPtr<combustionModels::psiChemistryCombustionModel> combustion
 (
     combustionModels::psiChemistryCombustionModel::New
@@ -15,6 +24,21 @@ hsCombustionThermo& thermo = chemistry.thermo();
 basicMultiComponentMixture& composition = thermo.composition();
 PtrList<volScalarField>& Y = composition.Y();
 
+*/
+autoPtr<combustionModels::psiChemistryCombustionModel> combustion
+(
+    combustionModels::psiChemistryCombustionModel::New
+    (
+        mesh
+    )
+);
+
+psiChemistryModel& chemistry = combustion->pChemistry();
+
+hsCombustionThermo& thermo = chemistry.thermo();
+
+basicMultiComponentMixture& composition = thermo.composition();
+PtrList<volScalarField>& Y = composition.Y();
 word inertSpecie(thermo.lookup("inertSpecie"));
 
 volScalarField rho

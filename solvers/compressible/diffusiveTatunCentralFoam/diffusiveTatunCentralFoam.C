@@ -124,6 +124,11 @@ int main(int argc, char *argv[])
 
         //volScalarField c(sqrt(thermo.Cp()/(thermo.Cp()-R)*rPsi));
 	volScalarField c(sqrt(thermo.Cp()/(thermo.Cp()-rPsi/T)*rPsi));
+	//volScalarField c1(sqrt(thermo.Cp()/(thermo.Cv())*rPsi));
+	//volScalarField c(sqrt(thermo.gamma()/rPsi));
+        //Info << min(c-c1).value() << "c-c1" << max(c-c1).value() << endl;
+	soundSpeed = c;
+	Mach = mag(rhoU)/(c*rho);
         surfaceScalarField cSf_pos
         (
             fvc::interpolate(c, pos, "reconstruct(T)")*mesh.magSf()
@@ -274,8 +279,8 @@ int main(int argc, char *argv[])
             (
                 fvm::ddt(rho, hs) - fvc::ddt(rho, hs)//fvm::ddt(rho, e) - fvc::ddt(rho, e)
               - fvm::laplacian(turbulence->alphaEff(), hs) // alphaEff = alpha + alphat 
-	      + fvc::laplacian(turbulence->alphaEff(), hs)  // "remove" the contribution from the inviscid predictor
-              - fvc::laplacian(k, T)   // originally minus sign!
+	      //+ fvc::laplacian(turbulence->alphaEff(), hs)  // "remove" the contribution from the inviscid predictor
+              //- fvc::laplacian(k, T)   // originally minus sign!
 	      //- fvc::laplacian(k, TrPsi)
 	      //== combustion->Sh()// - shPredi
             );
@@ -291,8 +296,20 @@ int main(int argc, char *argv[])
         rho.boundaryField() = psi.boundaryField()*p.boundaryField();
 
         turbulence->correct();
+	
+	//#include "/home/tptatu/OpenFOAM/tptatu-2.1.1/applications/targetFields/targetPhi.H"
 
-	#include "/home/tptatu/OpenFOAM/tptatu-2.1.1/applications/targetFields/targetPhi.H"
+        /*p.dimensionedInternalField() =
+            rho.dimensionedInternalField()
+           /psi.dimensionedInternalField();
+        p.correctBoundaryConditions();
+        rho.boundaryField() = psi.boundaryField()*p.boundaryField();*/
+
+	/*rhoU = rho*U;
+	rhoH = rho*(hs + 0.5*magSqr(U));*/
+	K = magSqr(U);
+	h = thermo.Cp()*T + K;
+
         runTime.write();
 
 

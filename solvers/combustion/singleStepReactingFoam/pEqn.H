@@ -1,6 +1,7 @@
 rho = thermo.rho();
 
-volScalarField rAU(1.0/UEqn.A());
+//volScalarField rAU(1.0/UEqn.A());
+rAU = 1.0/UEqn.A();
 U = rAU*UEqn.H();
 
 if (pimple.transonic())
@@ -68,6 +69,17 @@ Info<< "p min/max : " << min(p).value()
 << " " << max(p).value() << endl;
 U -= rAU*fvc::grad(p);
 U.correctBoundaryConditions();
+
+    UEqn =
+    (
+        fvm::ddt(rho, U)
+      + fvm::div(phi, U)
+      + turbulence->divDevRhoReff(U)
+     ==
+        rho*g
+    );
+rAU = 1.0/UEqn.A();
+
 K = 0.5*magSqr(U);
 
 dpdt = fvc::ddt(p);

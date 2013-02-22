@@ -169,3 +169,16 @@ volScalarField diffT
     ),
     T*0.0
 );
+volScalarField rAU // rUA stored for fixedFluxPressure BC
+(
+ 	 IOobject
+ 	 (
+ 	 "(1|A(U))",
+	  runTime.timeName(),
+	  mesh
+	 ),
+	 mesh,
+	 //dimensionedScalar("rUA", dimTime, 1),
+	 dimensionedScalar("rUA",dimensionSet(-1,3,1,0,0),1),
+	 zeroGradientFvPatchScalarField::typeName
+);

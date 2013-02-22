@@ -283,7 +283,7 @@ int main(int argc, char *argv[])
             rhoH = rho*(hs + 0.5*magSqr(U));
         }
 
-	#include "targetPhi.H"
+	//#include "targetPhi.H"
 
         p.dimensionedInternalField() =
             rho.dimensionedInternalField()

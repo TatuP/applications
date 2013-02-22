@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
             }
         }
 
-	#include "/home/tptatu/OpenFOAM/tptatu-2.1.1/applications/targetFields/targetPhi.H"
+	//#include "/home/tptatu/OpenFOAM/tptatu-2.1.1/applications/targetFields/targetPhi.H"
         runTime.write();
 
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
