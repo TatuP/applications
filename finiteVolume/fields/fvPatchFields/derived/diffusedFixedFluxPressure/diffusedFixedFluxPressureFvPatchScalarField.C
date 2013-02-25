@@ -133,7 +133,7 @@ void Foam::diffusedFixedFluxPressureFvPatchScalarField::updateCoeffs()
 
     fvsPatchField<scalar> phip =
         patch().patchField<surfaceScalarField, scalar>(phi);*/
-    Info << "start of updateCoeffs" << endl;
+  //  Info << "start of updateCoeffs" << endl;
     const surfaceScalarField& phiHbyA =
 	        db().lookupObject<surfaceScalarField>("(1|A("+UName_+"_))");
 
@@ -164,7 +164,7 @@ void Foam::diffusedFixedFluxPressureFvPatchScalarField::updateCoeffs()
 
 //   const fvPatchField<scalar>& rhop =
 //        patch().lookupPatchField<volScalarField, scalar>(rhoName_);
-    Info << "before gradient() evaluation" << endl;
+//    Info << "before gradient() evaluation" << endl;
     if (adjoint_)
     {
         //gradient() = ((patch().Sf() & Up) - phip)/patch().magSf()/rAp/dp;
