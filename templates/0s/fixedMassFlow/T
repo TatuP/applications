@@ -39,7 +39,7 @@ boundaryField
     walls
     {
         type            fixedValue;
-        value           $internalField;     
+        value           uniform 400;     
 //	type		zeroGradient;
     }
     midWalls

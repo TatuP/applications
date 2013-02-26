@@ -25,21 +25,21 @@ boundaryField
     {
 //	type zeroGradient; /*
 	type flowRateInletVelocity;
-	flowRate 0.10558e-4;//0.10558e-4; // Volumetric/mass flow rate [m3/s or kg/s]
+	flowRate 8.0324e-5;//0.10558e-4;//0.10558e-4; // Volumetric/mass flow rate [m3/s or kg/s]
 	value uniform (0 0 0); // placeholder*/
     }
     fuelAir
     {
 //	type zeroGradient; /*
 	type flowRateInletVelocity;
-	flowRate 0.18396e-4;//0.108396e-4;//0.18396e-4; // Volumetric/mass flow rate [m3/s or kg/s]
+	flowRate 8.3915e-5;//0.18396e-4;//0.108396e-4;//0.18396e-4; // Volumetric/mass flow rate [m3/s or kg/s]
 	value uniform (0 0 0); // placeholder*/
     }
     carrier
     {
 //	type zeroGradient; /*
 	type flowRateInletVelocity;
-	flowRate 0.0045599e-4; // Volumetric/mass flow rate [m3/s or kg/s]
+	flowRate 2.5866e-6;//0.0045599e-4; // Volumetric/mass flow rate [m3/s or kg/s]
 	value uniform (0 0 0); // placeholder*/
     }
     walls

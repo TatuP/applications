@@ -29,7 +29,7 @@ boundaryField
     fuelAir
     {
         type            fixedValue;
-        value           uniform 0.2299; // 0.1135/(0.1135 + 0.3903)
+        value           uniform 0.2859;//0.2299; // 0.1135/(0.1135 + 0.3903)
     }
     carrier
     {
