@@ -307,7 +307,7 @@ int main(int argc, char *argv[])
 
 	/*rhoU = rho*U;
 	rhoH = rho*(hs + 0.5*magSqr(U));*/
-	K = magSqr(U);
+	K = 0.5*magSqr(U);
 	h = thermo.Cp()*T + K;
 
         runTime.write();
