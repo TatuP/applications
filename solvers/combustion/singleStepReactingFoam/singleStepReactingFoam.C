@@ -95,6 +95,7 @@ int main(int argc, char *argv[])
 	Mach = mag(U)/soundSpeed;
 	K = 0.5*magSqr(U);
 	h = thermo.Cp()*T + K;
+	rhoU = rho*U;
         runTime.write();
 
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
