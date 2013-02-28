@@ -86,6 +86,15 @@ int main(int argc, char *argv[])
         }
 
 	//#include "/home/tptatu/OpenFOAM/tptatu-2.1.1/applications/targetFields/targetPhi.H"
+	volScalarField rPsi(1.0/psi);
+	soundSpeed = sqrt(thermo.Cp()/(thermo.Cp()-rPsi/T)*rPsi);
+	//volScalarField c1(sqrt(thermo.Cp()/(thermo.Cv())*rPsi));
+	//volScalarField c(sqrt(thermo.gamma()/rPsi));
+        //Info << min(c-c1).value() << "c-c1" << max(c-c1).value() << endl;
+	//soundSpeed = c;
+	Mach = mag(U)/soundSpeed;
+	K = 0.5*magSqr(U);
+	h = thermo.Cp()*T + K;
         runTime.write();
 
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"

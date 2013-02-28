@@ -81,7 +81,7 @@ Info<< "Creating field dpdt\n" << endl;
 volScalarField dpdt("dpdt", fvc::ddt(p));
 
 Info<< "Creating field kinetic energy K\n" << endl;
-volScalarField K("K", 0.5*magSqr(U));
+//volScalarField K("K", 0.5*magSqr(U));
 
 
 multivariateSurfaceInterpolationScheme<scalar>::fieldTable fields;
@@ -194,4 +194,54 @@ surfaceScalarField phiHbyA // rUA stored for fixedFluxPressure BC
 	 //dimensionedScalar("rUA", dimTime, 1),
 	 dimensionedScalar("phiHbyA",dimensionSet(1,0,-1,0,0),1)
 	// zeroGradientFvPatchScalarField::typeName
+);
+
+volScalarField Mach
+(
+    IOobject
+    (
+        "Mach",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("Mach", dimless, 0.0)
+);
+volScalarField soundSpeed
+(
+    IOobject
+    (
+        "soundSpeed",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    mag(U)*0.0
+);
+volScalarField h 
+(
+    IOobject
+    (
+        "h",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    0.5*magSqr(U)*0.0
+);
+volScalarField K 
+(
+    IOobject
+    (
+        "K",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    0.5*magSqr(U)
 );
