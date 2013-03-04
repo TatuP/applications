@@ -66,9 +66,12 @@ int main(int argc, char *argv[])
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
         #include "rhoEqn.H"
-
+	volScalarField rPsi(1.0/psi);
+	soundSpeed = sqrt(thermo.Cp()/(thermo.Cp()-rPsi/T)*rPsi);
+	#include "sarkarCorrection.H"
         while (pimple.loop())
         {
+	    
             #include "UEqn.H"
             #include "YEqn.H"
             #include "hsEqn.H"
@@ -86,8 +89,9 @@ int main(int argc, char *argv[])
         }
 
 	//#include "/home/tptatu/OpenFOAM/tptatu-2.1.1/applications/targetFields/targetPhi.H"
-	volScalarField rPsi(1.0/psi);
+	rPsi = 1.0/psi;
 	soundSpeed = sqrt(thermo.Cp()/(thermo.Cp()-rPsi/T)*rPsi);
+        
 	//volScalarField c1(sqrt(thermo.Cp()/(thermo.Cv())*rPsi));
 	//volScalarField c(sqrt(thermo.gamma()/rPsi));
         //Info << min(c-c1).value() << "c-c1" << max(c-c1).value() << endl;
@@ -96,6 +100,7 @@ int main(int argc, char *argv[])
 	K = 0.5*magSqr(U);
 	h = thermo.Cp()*T + K;
 	rhoU = rho*U;
+	muLaminar = turbulence->mu();
         runTime.write();
 
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"

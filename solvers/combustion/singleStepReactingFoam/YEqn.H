@@ -25,7 +25,7 @@ tmp<fv::convectionScheme<scalar> > mvConvection
             (
                 fvm::ddt(rho, Yi)
               + mvConvection->fvmDiv(phi, Yi)
-              - fvm::laplacian(turbulence->muEff()/0.7, Yi)
+              - fvm::laplacian(mut/0.7,Yi)//- fvm::laplacian(turbulence->muEff()/0.7, Yi)
              ==
                 combustion->R(Yi)
             );

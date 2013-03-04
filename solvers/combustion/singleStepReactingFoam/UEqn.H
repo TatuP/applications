@@ -1,8 +1,13 @@
+ //fvVectorMatrix sarkarStressDiag =
+ //     - fvm::laplacian(mut, U);
+//volVectorField sarkarStressDev =
+//      - fvc::div(mut*dev2(Foam::T(fvc::grad(U))));   
     fvVectorMatrix UEqn
     (
         fvm::ddt(rho, U)
       + fvm::div(phi, U)
-      + turbulence->divDevRhoReff(U)
+      //+ turbulence->divDevRhoReff(U)
+      + sarkarStressDiag + sarkarStressDev
      ==
         rho*g
     );

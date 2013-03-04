@@ -246,3 +246,15 @@ volVectorField rhoU
     ),
     rho*U
 );
+volScalarField muLaminar
+(
+    IOobject
+    (
+        "muLaminar",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    turbulence->mu()
+);

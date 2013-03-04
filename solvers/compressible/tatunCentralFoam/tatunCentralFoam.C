@@ -244,7 +244,7 @@ int main(int argc, char *argv[])
 
 	volScalarField dpdt = fvc::ddt(p);
 
-	volScalarField shPredi = combustion->Sh();
+	volScalarField shPredi = combustion->Sh(); // predictor value for heat of formation
         solve
         (
 	    fvm::ddt(rhoH)
@@ -267,9 +267,10 @@ int main(int argc, char *argv[])
 	//volScalarField shDiff = combustion->Sh() - shPredi;
         //Info << min(shDiff).value() << " < shDiff < " << max(shDiff).value() << endl;
 	//volScalarField TrPsi = T+rPsi;
+	scalar Prt = 0.85;
         if (!inviscid)
         {
-            volScalarField k("k", thermo.Cp()*muEff/Pr);//thermo.Cp()*muEff/Pr);
+            volScalarField k("k", thermo.Cp()*muEff/Prt);//thermo.Cp()*muEff/Pr);
             solve
             (
                 fvm::ddt(rho, hs) - fvc::ddt(rho, hs)//fvm::ddt(rho, e) - fvc::ddt(rho, e)
@@ -283,7 +284,6 @@ int main(int argc, char *argv[])
             rhoH = rho*(hs + 0.5*magSqr(U));
         }
 
-	//#include "targetPhi.H"
 
         p.dimensionedInternalField() =
             rho.dimensionedInternalField()
@@ -298,6 +298,7 @@ int main(int argc, char *argv[])
 
 	Info<< min(rho).value() <<" < rho < " << max(rho).value() << endl; // for debugging
 	Info<< min(T).value() <<" < T < " << max(T).value() << endl;	   // for debugging
+
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
             << "  ClockTime = " << runTime.elapsedClockTime() << " s"
             << nl << endl;

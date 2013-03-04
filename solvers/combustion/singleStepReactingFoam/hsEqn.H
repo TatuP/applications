@@ -3,7 +3,7 @@
     (
         fvm::ddt(rho, hs)
       + mvConvection->fvmDiv(phi, hs)
-      - fvm::laplacian(turbulence->alphaEff(), hs)
+      - fvm::laplacian(alphat,hs)//- fvm::laplacian(turbulence->alphaEff(), hs)
 //      - fvm::laplacian(turbulence->muEff(), hs)  // unit lewis no.
      ==
         dpdt

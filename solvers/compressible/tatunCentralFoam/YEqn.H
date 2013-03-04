@@ -22,7 +22,7 @@ tmp<fv::convectionScheme<scalar> > mvConvection
         if (Y[i].name() != inertSpecie)
         {
             volScalarField& Yi = Y[i];
-	    volScalarField& rhoYi = rhoY[i];
+	    volScalarField& rhoYi = rhoY[i]; 
 //-------Inviscid predictor + viscous corrector for Yi begins-----------
 
 
@@ -37,20 +37,9 @@ tmp<fv::convectionScheme<scalar> > mvConvection
 	    // calculated based on local speed of sound at the cell faces
 	    surfaceScalarField phiYi("phiYi", aphiv_pos*rho_pos*Yi_pos + aphiv_neg*rho_neg*Yi_neg); // phiYi=rho*U*Yi
 	    
-
-	    /*volScalarField rhoYi
-	    (
-		    IOobject
-		    (
-			"rhoYi",
-			runTime.timeName(),
-		        mesh,
-        		IOobject::NO_READ,
-		        IOobject::NO_WRITE
-		    ),
-	    rho*Yi
-	    );*/ 
-	    /*volScalarField RYiPredi
+	    // ideally there should be a predictor value for the specie source, rho*combustion->R(Yi)
+	    // however, I have not been able to modify the combustion->R function to support the solution of field rhoYi
+	    /*volScalarField RYiPredi 
 	    (
 		    IOobject
 		    (
@@ -64,34 +53,25 @@ tmp<fv::convectionScheme<scalar> > mvConvection
 	    );*/
 
 	    
-	    //volScalarField RYiPredi = combustion->R(Yi);
-	    //volScalarField YiOld = Yi;
             solve
             (
 		fvm::ddt(rhoYi)
 	      + fvc::div(phiYi)
               //== combustion->Rrho(Yi,rhoYi)
             );
-	    //Info<< "After predictor eq" << endl;
-	    // 	    Info<< "after species equation" << endl;
 	    Yi = rhoYi/rho;
 	    Yi.correctBoundaryConditions();
-	    //Info<< min(Yi).value() <<" < Yi before corrector < " << max(Yi).value() << endl;
 	    Yi.max(0.0);
 
             rhoYi.boundaryField() = rho.boundaryField()*Yi.boundaryField();
 
-	   //combustion->correct();
-	
-
-// Solve the viscous corrector for Yi (if the predictor is used)
-	    //Info<< "Before corrector eq" << endl;
+	    // Solve the viscous corrector for Yi (if the predictor is used)
             solve
             (
 		fvm::ddt(rho,Yi) - fvc::ddt(rho,Yi)
 	      + fvm::div(phi,Yi) - fvc::div(phi,Yi)
-	      - fvm::laplacian(muEff,Yi)
-	        == combustion->R(Yi) //- combustion->R(YiOld)
+	      - fvm::laplacian(muEff/0.7,Yi) // turbulent Schmidt number 1.0 at the moment 
+	        == combustion->R(Yi) // - RYiPredi/rho (in an ideal case)
 	      ,
 		mesh.solver("Yi")	
             ); 
@@ -99,7 +79,7 @@ tmp<fv::convectionScheme<scalar> > mvConvection
 
 // -----------Inviscid predictor + viscous corrector for Yi ends-----------
 
-
+// ---------reactingFoam Yi eqn---------- (not used)
 	    // species transport equation exactly as in reactingFoam,
 	    // where it is assumed that Schmidt number Sc = 1.0, so that
 	    // effective mu (turbulent + laminar mu) is exactly the diffusion
@@ -119,15 +99,15 @@ tmp<fv::convectionScheme<scalar> > mvConvection
 	    // print the mass fraction value range, if it is nonphysical (for debugging)
 	    scalar minYi = min(Yi).value();
 	    scalar maxYi = max(Yi).value();
-            if ((minYi < -1e-100) || (maxYi > 1.0))
+            if ((minYi < -1e-100) || (maxYi > 1.0)) // print Yi range when it is unphysical
             {
     		Info<< minYi << " < Yi < " << maxYi << endl;
 	    }
             Yi.max(0.0);
 	    Yi.min(1.0);
-	    rhoYi = rho*Yi;
+	    rhoYi = rho*Yi; // store rhoYi for predictor equation of the next time step
 	    
-            Yt += Yi;//*/
+            Yt += Yi;
         }
         else
         {
@@ -139,7 +119,7 @@ tmp<fv::convectionScheme<scalar> > mvConvection
     volScalarField& Yin = Y[inertIndex];
 
 // ---debugging stuff starts---
-    // print the mass fraction value range of the inert specie, if it is nonphysical
+    // print the mass fraction value range of the inert specie, if it is unphysical
     scalar minYin = min(Yin).value();
     scalar maxYin = max(Yin).value();
     if ((minYin < 0.0) || (maxYin > 1.0))
@@ -153,10 +133,10 @@ tmp<fv::convectionScheme<scalar> > mvConvection
     {
 	    Info << minYsum << " < sum(Yi) < " << maxYsum << endl;
     }
-    //Info<< min(Yt + Yin).value() << " < sum(Yi) < " << max(Yt + Yin).value() << endl;
     YinertNeg = Yin; // YinertNeg is an extra field which shows negative mass fractions (for debugging)
     YinertNeg.min(0.0); // this extra field should have a maximum value of 0
 // ---debugging stuff ends---
+    
     Y[inertIndex].max(0.0);
 
     
