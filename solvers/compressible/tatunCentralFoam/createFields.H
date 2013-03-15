@@ -109,7 +109,7 @@ volVectorField rhoU
         runTime.timeName(),
         mesh,
         IOobject::NO_READ,
-        IOobject::NO_WRITE
+        IOobject::AUTO_WRITE
     ),
     rho*U
 );
@@ -204,23 +204,6 @@ forAll (Y, i)
 }
 fields.add(hs);
 
-
-
-
-/*PtrList<volScalarField>& rhoY 
-(
-    IOobject
-    (
-        "rhoY",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::NO_WRITE
-    ),
-    Y
-);*/
-// 
-
 volScalarField kappa
 (
     IOobject
@@ -275,41 +258,68 @@ volScalarField YinertNeg // negative inert mass fraction field for debugging
     dimensionedScalar("YinertNeg", dimEnergy/dimEnergy, 0.0)
 );
 
-/*volVectorField rhoU
+volScalarField Mach
 (
     IOobject
     (
-        "rhoU",
+        "Mach",
         runTime.timeName(),
         mesh,
         IOobject::NO_READ,
         IOobject::AUTO_WRITE
     ),
-    rho*U
-);*/
-
-volVectorField rhoUA
-(
-    IOobject
-    (
-        "rhoUA",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::AUTO_WRITE
-    ),
-    0.02e-2*(0.176022-0.1611)*1e-2*rho*U*0.0
+    mesh,
+    dimensionedScalar("Mach", dimless, 0.0)
 );
-volVectorField diffRhoU
+volScalarField soundSpeed
 (
     IOobject
     (
-        "diffRhoU",
+        "soundSpeed",
         runTime.timeName(),
         mesh,
         IOobject::NO_READ,
         IOobject::AUTO_WRITE
     ),
-    rho*U*0.0
+    mag(U)*0.0
+);
+volScalarField h 
+(
+    IOobject
+    (
+        "h",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    0.5*magSqr(U)*0.0
+);
+volScalarField K 
+(
+    IOobject
+    (
+        "K",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    0.5*magSqr(U)
+);
+
+volScalarField rDeltaT
+(
+    IOobject
+    (
+        "rDeltaT",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    1/dimensionedScalar("maxDeltaT", dimTime, GREAT),
+    zeroGradientFvPatchScalarField::typeName
 );
 // tatu end

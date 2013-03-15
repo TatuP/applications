@@ -281,7 +281,6 @@ int main(int argc, char *argv[])
               - fvm::laplacian(turbulence->alphaEff(), hs) // alphaEff = alpha + alphat 
 	      + fvc::laplacian(turbulence->alphaEff(), hs)  // "remove" the contribution from the inviscid predictor
               - fvc::laplacian(k, T)   // originally minus sign!
-	      //- fvc::laplacian(k, TrPsi)
 	      //== combustion->Sh()// - shPredi
             );
             thermo.correct();

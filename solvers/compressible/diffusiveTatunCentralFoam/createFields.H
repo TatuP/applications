@@ -375,4 +375,19 @@ volScalarField K
     ),
     0.5*magSqr(U)
 );
+
+volScalarField rDeltaT
+(
+    IOobject
+    (
+        "rDeltaT",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    1/dimensionedScalar("maxDeltaT", dimTime, GREAT),
+    zeroGradientFvPatchScalarField::typeName
+);
 // tatu end

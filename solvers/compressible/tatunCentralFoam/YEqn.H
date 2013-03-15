@@ -1,4 +1,4 @@
-tmp<fv::convectionScheme<scalar> > mvConvection
+/*tmp<fv::convectionScheme<scalar> > mvConvection
 (
     fv::convectionScheme<scalar>::New
     (
@@ -8,7 +8,7 @@ tmp<fv::convectionScheme<scalar> > mvConvection
         mesh.divScheme("div(phi,Yi_h)")
     )
 );
-
+*/	
 {
 
     //thermo.correct();
@@ -69,8 +69,8 @@ tmp<fv::convectionScheme<scalar> > mvConvection
             solve
             (
 		fvm::ddt(rho,Yi) - fvc::ddt(rho,Yi)
-	      + fvm::div(phi,Yi) - fvc::div(phi,Yi)
-	      - fvm::laplacian(muEff/0.7,Yi) // turbulent Schmidt number 1.0 at the moment 
+	      //+ fvm::div(phi,Yi) - fvc::div(phi,Yi)
+	      - fvm::laplacian(muEff/0.8,Yi) // turbulent Schmidt number 1.0 at the moment 
 	        == combustion->R(Yi) // - RYiPredi/rho (in an ideal case)
 	      ,
 		mesh.solver("Yi")	
@@ -99,7 +99,7 @@ tmp<fv::convectionScheme<scalar> > mvConvection
 	    // print the mass fraction value range, if it is nonphysical (for debugging)
 	    scalar minYi = min(Yi).value();
 	    scalar maxYi = max(Yi).value();
-            if ((minYi < -1e-100) || (maxYi > 1.0)) // print Yi range when it is unphysical
+            if ((minYi < -1e-12) || (maxYi > 1.0+1e-12)) // print Yi range when it is unphysical
             {
     		Info<< minYi << " < Yi < " << maxYi << endl;
 	    }
@@ -129,7 +129,7 @@ tmp<fv::convectionScheme<scalar> > mvConvection
     scalar minYsum = min(Yt + Yin).value();
     scalar maxYsum = max(Yt + Yin).value();
     // print the sum of each mass fractions if it is unphysical (should be exactly 1.0)
-    if ((minYsum < 1.0) || (maxYsum > 1.0))
+    if ((minYsum < 1.0-1e-15) || (maxYsum > 1.0+1e-15))
     {
 	    Info << minYsum << " < sum(Yi) < " << maxYsum << endl;
     }

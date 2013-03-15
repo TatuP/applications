@@ -124,6 +124,10 @@ int main(int argc, char *argv[])
 
         //volScalarField c(sqrt(thermo.Cp()/(thermo.Cp()-R)*rPsi));
 	volScalarField c(sqrt(thermo.Cp()/(thermo.Cp()-rPsi/T)*rPsi));
+
+	soundSpeed = c;
+	Mach = mag(rhoU)/(c*rho);
+
         surfaceScalarField cSf_pos
         (
             fvc::interpolate(c, pos, "reconstruct(T)")*mesh.magSf()
@@ -292,6 +296,9 @@ int main(int argc, char *argv[])
         rho.boundaryField() = psi.boundaryField()*p.boundaryField();
 
         turbulence->correct();
+
+	K = 0.5*magSqr(U);
+	h = thermo.Cp()*T + K;
 
         runTime.write();
 

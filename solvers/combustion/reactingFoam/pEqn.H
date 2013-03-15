@@ -70,4 +70,11 @@ U -= rAU*fvc::grad(p);
 U.correctBoundaryConditions();
 K = 0.5*magSqr(U);
 
+phiHbyA =
+        fvc::interpolate(rho)
+       *(
+            (fvc::interpolate(U) & mesh.Sf()) //*(fvc::interpolate(asd) & mesh.Sf())
+        );
+
+
 dpdt = fvc::ddt(p);
