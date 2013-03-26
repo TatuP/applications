@@ -173,7 +173,7 @@ void Foam::diffusedFixedFluxPressureFvPatchScalarField::updateCoeffs()
     else
     {
         //gradient() = (phip - (patch().Sf() & Up))/patch().magSf()/rAp/dp; ///rhop
-	    gradient() = (phiHbyAp - phip)/patch().magSf();
+	    gradient() = (phiHbyAp - phip)/patch().magSf()/2.0;
     }
 //    Info<< min(gradient()) << " < gradient() < " << max(gradient()) << endl;
 //    Info<< min(rAp) << " < rAp < " << max(rAp) << endl;

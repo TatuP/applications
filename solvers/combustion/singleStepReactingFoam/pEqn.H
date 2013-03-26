@@ -80,7 +80,7 @@ U.correctBoundaryConditions();
         rho*g
     );
 rAU = 1.0/UEqn.A();
-volVectorField asd = UEqn.H()*rAU;
+//volVectorField asd = UEqn.H()*rAU;
 phiHbyA =
         fvc::interpolate(rho)
        *(

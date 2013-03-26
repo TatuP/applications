@@ -234,6 +234,12 @@ int main(int argc, char *argv[])
             rhoU = rho*U;
         }
 // tatu start: add specie transport equation, replace rhoE --> rhoH and e --> hs
+
+	phiHbyA =
+        fvc::interpolate(rho)
+       *(
+            (fvc::interpolate(U) & mesh.Sf()) //*(fvc::interpolate(asd) & mesh.Sf())
+        );
 	#include "YEqn.H" //nakul
 
         // --- Solve energy
@@ -278,9 +284,9 @@ int main(int argc, char *argv[])
             solve
             (
                 fvm::ddt(rho, hs) - fvc::ddt(rho, hs)//fvm::ddt(rho, e) - fvc::ddt(rho, e)
-              - fvm::laplacian(turbulence->alphaEff(), hs) // alphaEff = alpha + alphat 
-	      + fvc::laplacian(turbulence->alphaEff(), hs)  // "remove" the contribution from the inviscid predictor
-              - fvc::laplacian(k, T)   // originally minus sign!
+              - fvm::laplacian(muEff/Prt, hs) // alphaEff = alpha + alphat 
+	      //+ fvc::laplacian(turbulence->alphaEff(), hs)  // "remove" the contribution from the inviscid predictor
+              //- fvc::laplacian(k, T)   // originally minus sign!
 	      //- fvc::laplacian(k, TrPsi)
 	      //== combustion->Sh()// - shPredi
             );

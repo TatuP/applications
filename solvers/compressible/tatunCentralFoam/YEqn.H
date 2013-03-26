@@ -66,11 +66,12 @@
             rhoYi.boundaryField() = rho.boundaryField()*Yi.boundaryField();
 
 	    // Solve the viscous corrector for Yi (if the predictor is used)
+	    scalar Sct = 0.7;
             solve
             (
 		fvm::ddt(rho,Yi) - fvc::ddt(rho,Yi)
 	      //+ fvm::div(phi,Yi) - fvc::div(phi,Yi)
-	      - fvm::laplacian(muEff/0.8,Yi) // turbulent Schmidt number 1.0 at the moment 
+	      - fvm::laplacian(muEff/Sct,Yi) // turbulent Schmidt number 1.0 at the moment 
 	        == combustion->R(Yi) // - RYiPredi/rho (in an ideal case)
 	      ,
 		mesh.solver("Yi")	

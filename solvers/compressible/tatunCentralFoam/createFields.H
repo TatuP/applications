@@ -322,4 +322,18 @@ volScalarField rDeltaT
     1/dimensionedScalar("maxDeltaT", dimTime, GREAT),
     zeroGradientFvPatchScalarField::typeName
 );
+
+surfaceScalarField phiHbyA // rUA stored for fixedFluxPressure BC
+(
+ 	 IOobject
+ 	 (
+ 	 "(1|A(U_))",
+	  runTime.timeName(),
+	  mesh
+	 ),
+	 mesh,
+	 //dimensionedScalar("rUA", dimTime, 1),
+	 dimensionedScalar("phiHbyA",dimensionSet(1,0,-1,0,0),1)
+	// zeroGradientFvPatchScalarField::typeName
+);
 // tatu end
