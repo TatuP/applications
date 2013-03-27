@@ -15,6 +15,7 @@ tmp<fv::convectionScheme<scalar> > mvConvection
     label inertIndex = -1;
     volScalarField Yt(0.0*Y[0]);
 
+    scalar Sct = 0.7;
     forAll(Y, i)
     {
         if (Y[i].name() != inertSpecie)
@@ -25,7 +26,7 @@ tmp<fv::convectionScheme<scalar> > mvConvection
             (
                 fvm::ddt(rho, Yi)
               + mvConvection->fvmDiv(phi, Yi)
-              - fvm::laplacian(mut/0.7,Yi)//- fvm::laplacian(turbulence->muEff()/0.7, Yi)
+              - fvm::laplacian(turbulence->muEff()/Sct,Yi)//- fvm::laplacian(turbulence->muEff()/0.7, Yi)
              ==
                 combustion->R(Yi)
             );

@@ -255,13 +255,17 @@ int main(int argc, char *argv[])
 	volScalarField dpdt = fvc::ddt(p);
 
 	volScalarField shPredi = combustion->Sh(); // predictor value for heat of formation
+	scalar Prt = 0.85;
+        volScalarField alphaEff = muEff/Prt;
         solve
         (
 	    fvm::ddt(rhoH)
           + fvc::div(phiHp)
           - fvc::div(sigmaDotU)
 	  - dpdt // rhoE = rhoH - p
-	  == shPredi // include enthalpy calculation in the inviscid predictor equation?
+	  == 
+	     shPredi // include enthalpy calculation in the inviscid predictor equation?
+	  + fvc::laplacian(alphaEff,p/rho)
         );
 
         //e = rhoE/rho - 0.5*magSqr(U);
@@ -277,14 +281,13 @@ int main(int argc, char *argv[])
 	//volScalarField shDiff = combustion->Sh() - shPredi;
         //Info << min(shDiff).value() << " < shDiff < " << max(shDiff).value() << endl;
 	//volScalarField TrPsi = T+rPsi;
-	scalar Prt = 0.85;
         if (!inviscid)
         {
             volScalarField k("k", thermo.Cp()*muEff/Prt);//thermo.Cp()*muEff/Pr);
             solve
             (
                 fvm::ddt(rho, hs) - fvc::ddt(rho, hs)//fvm::ddt(rho, e) - fvc::ddt(rho, e)
-              - fvm::laplacian(muEff/Prt, hs) // alphaEff = alpha + alphat 
+              - fvm::laplacian(alphaEff, hs) // alphaEff = alpha + alphat 
 	      //+ fvc::laplacian(turbulence->alphaEff(), hs)  // "remove" the contribution from the inviscid predictor
               //- fvc::laplacian(k, T)   // originally minus sign!
 	      //- fvc::laplacian(k, TrPsi)
