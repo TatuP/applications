@@ -112,11 +112,11 @@ void EDM<CombThermoType, ThermoType>::correct()
 
 	    //const Reaction<ThermoType>& reaction = this->operator[](0);	
             const volScalarField& YO2 = this->thermo_->composition().Y("O2");
-	    volScalarField YPsum = 0.0*YO2;
+	    //volScalarField YPsum = 0.0*YO2;
 	    //this->singleMixture_.calcYprod();
 	    //YPsum = this->singl
 	    
-	    const List<scalar>& stoichList = this->singleMixture_.specieStoichCoeffs(); 
+	    //const List<scalar>& stoichList = this->singleMixture_.specieStoichCoeffs(); 
 	    /*scalar stoichMPsum = 0.0; // sum(stoich coeff * molar mass) 
 	    forAll(this->thermo_->composition().Y(),Yi)
 	    {
@@ -166,16 +166,18 @@ void EDM<CombThermoType, ThermoType>::correct()
 		minAtauik = min(minAtauik,Atauik);
 		//scalar Ataui = min(Atauik,Atauimu);
 		scalar Ataui = Atauimu;
+		scalar si = s.value();
 		scalar YFueli = YFuel[i];
-		scalar YO2si = YO2[i]/s.value(); // s.value = stoichiometric fuel-oxygen ratio	
+		scalar YO2si = YO2[i]/si; // s.value = stoichiometric fuel-oxygen ratio	
+		scalar YProdi = 1.0-YFueli-YO2[i];
 		scalar dt = this->mesh().time().deltaT().value();
 		//Info<< "s.value() = " << s.value() << endl;
 		/*if (Ataui>1.0/(dt*C_)) {
 			Info<< "Ataui = " << Ataui << " > 1.0/(dt*C_) = " << 1.0/(dt*C_) << endl;
 		}*/
-		//scalar YminReactants = min(YFueli,YO2si);
+		scalar YminReactants = min(YFueli,YO2si);
             	this->wFuel_[i] =
-			min(Ataui,1.0/(dt*C_))*rho[i]*min(YFueli, YO2si);
+			min(Ataui,1.0/(dt*C_))*rho[i]*min(YminReactants,B*YProdi/(1.0+si));
 			//min(Ataui,1.0/(dt*C_))*rho[i]*min(YminReactants, B*YsumP);
 			//Atauimu*rho[i]*min(YFueli, YO2si);
 			//Ataui*rhoi*min(YFueli, YO2si);

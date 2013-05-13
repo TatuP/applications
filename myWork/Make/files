@@ -1,0 +1,3 @@
+tatunRNG/tatunRNG.c
+
+LIB = $(FOAM_USER_LIBBIN)/libmyWork
