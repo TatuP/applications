@@ -1,0 +1,80 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.1                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSchemes;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+fluxScheme      Kurganov;
+
+ddtSchemes
+{
+    default         Euler;
+}
+
+gradSchemes
+{
+    default         Gauss linear;
+}
+
+divSchemes
+{
+   // default         	none;
+    default		Gauss linear;
+    div(tauMC)      	Gauss linear;
+    div(epsilon)	Gauss Gamma 1;
+    div(k)		Gauss Gamma 1;
+    //div(phi,Yi)		Gauss limitedLinear01 1;
+    //div(phi,Yi_h) 	Gauss upwind;//*/
+   /* div(phi,epsilon)	Gauss upwind; // linear
+    div(phi,k)		Gauss upwind; // linear
+
+    div(phi,Yi)		Gauss upwind;
+    div(phi,O2)		Gauss upwind;
+    div(phi,H2O)	Gauss upwind;
+    div(phi,CH4)	Gauss upwind;
+    div(phi,CO2)	Gauss upwind;*/
+}
+
+laplacianSchemes
+{
+    default         Gauss linear corrected;
+}
+
+interpolationSchemes
+{
+    default         linear;
+
+    reconstruct(rho) vanLeer;
+    reconstruct(U)  vanLeerV;
+    reconstruct(T)  vanLeer;
+    reconstruct(Yi)  vanLeer;
+
+    reconstruct(rho) Gamma 1;
+    reconstruct(U)  GammaV 1;
+    reconstruct(T)  Gamma 1;
+    reconstruct(Yi)  Gamma 1;
+
+/*    interpolate(rhoU) linear;
+    interpolate(tauMC) linear;
+    interpolate(muEff) linear;
+    interpolate(rho) linear;*/
+}
+
+snGradSchemes
+{
+    default         corrected;
+}
+
+
+// ************************************************************************* //

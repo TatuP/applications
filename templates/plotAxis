@@ -1,0 +1,248 @@
+#!/usr/bin/python
+
+#import numpy as np
+#import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('TkAgg')
+import pylab as plt
+import os
+from numpy import *
+wrkDir = os.getcwd()
+
+
+doublePlot = False
+separated = False
+kEpsilon = True # fields k and epsilon included 
+
+newestDir = ""
+latestTime = 0
+for dirname,dirnames,filenames in os.walk("." + "/sets"):
+	slashList = dirname.split("/")
+#	print slashList
+	try:
+		currentTime = float(slashList[-1])
+		if currentTime > latestTime:
+			latestTime = currentTime
+	except ValueError:
+		latestTime = latestTime
+
+	
+newestDir = "/sets/" + str(latestTime)
+
+print "Newest dir:" + str(newestDir)
+
+UPath = wrkDir + newestDir + "/axis_U.xy"
+Udata = plt.loadtxt(UPath)
+
+TPrhoPath = ''
+try:
+	TPrhoPath = wrkDir + newestDir + "/axis_C3H6_CO_CO2_H_H2_H2O_N2_O_O2_OH_T_p_rho.xy"
+	kEpsilon = False
+	TPrhoData = plt.loadtxt(TPrhoPath)
+except IOError:
+	TPrhoPath = wrkDir + newestDir + "/axis_C3H6_CO_CO2_H_H2_H2O_N2_O_O2_OH_T_epsilon_k_p_rho.xy"
+	TPrhoData = plt.loadtxt(TPrhoPath)
+	kEpsilon = True
+
+xNozzleExit = 0.795e-2 + 5.4e-2# - 1.56e-2
+xs = TPrhoData[:,0]
+xs = [xs[i] - xNozzleExit for i in range(0,len(xs))] #xs = xs - xNozzleExit
+C3H6s= 	TPrhoData[:,1]
+COs = 	TPrhoData[:,2]
+CO2s = 	TPrhoData[:,3]
+Hs = 	TPrhoData[:,4]
+H2s = 	TPrhoData[:,5]
+H2Os = 	TPrhoData[:,6]
+N2s = 	TPrhoData[:,7]
+Os = 	TPrhoData[:,8]
+O2s = 	TPrhoData[:,9]
+OHs = 	TPrhoData[:,10]
+Ts = 	TPrhoData[:,11]
+if kEpsilon:
+	Ps = 	TPrhoData[:,14]
+	rhos = 	TPrhoData[:,15]
+else:
+	Ps = 	TPrhoData[:,12]
+	rhos = 	TPrhoData[:,13]
+
+if doublePlot:
+	TPrhoPath = wrkDir + newestDir + "/axis_C3H6_CO_CO2_H_H2_H2O_N2_O_O2_OH_T_p_rho1.xy"
+	TPrhoData = plt.loadtxt(TPrhoPath)
+	xs1 = TPrhoData[:,0]
+	xs1 = [xs1[i] - xNozzleExit for i in range(0,len(xs1))] #xs = xs - xNozzleExit
+	UPath 	= 	wrkDir + newestDir + "/axis_U1.xy"
+	Udata1 	= 	plt.loadtxt(UPath)
+	C3H6s1	=	TPrhoData[:,1]
+	COs1 	= 	TPrhoData[:,2]
+	CO2s1 	= 	TPrhoData[:,3]
+	Hs1 	= 	TPrhoData[:,4]
+	H2s1 	= 	TPrhoData[:,5]
+	H2Os1 	= 	TPrhoData[:,6]
+	N2s1 	= 	TPrhoData[:,7]
+	Os1 	= 	TPrhoData[:,8]
+	O2s1 	= 	TPrhoData[:,9]
+	OHs1 	= 	TPrhoData[:,10]
+	Ts1 	= 	TPrhoData[:,11]
+	Ps1 	= 	TPrhoData[:,12]
+	rhos1 	= 	TPrhoData[:,13]
+
+	TPrhoPath = wrkDir + newestDir + "/axis_C3H6_CO_CO2_H_H2_H2O_N2_O_O2_OH_T_p_rho2.xy"
+	TPrhoData = plt.loadtxt(TPrhoPath)
+	UPath 	= 	wrkDir + newestDir + "/axis_U2.xy"
+	Udata2 	= 	plt.loadtxt(UPath)
+	C3H6s2	=	TPrhoData[:,1]
+	COs2	= 	TPrhoData[:,2]
+	CO2s2 	= 	TPrhoData[:,3]
+	Hs2 	= 	TPrhoData[:,4]
+	H2s2 	= 	TPrhoData[:,5]
+	H2Os2 	= 	TPrhoData[:,6]
+	N2s2 	= 	TPrhoData[:,7]
+	Os2	= 	TPrhoData[:,8]
+	O2s2 	= 	TPrhoData[:,9]
+	OHs2 	= 	TPrhoData[:,10]
+	Ts2 	= 	TPrhoData[:,11]
+	Ps2 	= 	TPrhoData[:,12]
+	rhos2 	= 	TPrhoData[:,13]
+
+
+
+fig = plt.figure()
+import matplotlib as mpl
+mpl.rcParams['lines.linewidth'] = 2 # 7
+mpl.rcParams['font.size'] = 16
+
+xLabelStr = "Axial distance from nozzle exit [m]"
+xLabelCoord = -0.075 # x-coordinate of ylabel
+xMin = min(xs)
+xMax = 0.2001
+#xMax = 0.3001
+
+if separated:
+	subplotti = plt.subplot(111)
+	plt.xlabel(xLabelStr)
+	plt.grid(True)
+else:
+	subplotti = plt.subplot(311)
+#	subplotti.set_xticklabels( () )
+	plt.grid(True)
+	
+TPlot = plt.plot(xs,1e-5*Ps,label='Mass setup 1, no substrate')
+plt.ylabel('Pressure [bar]')
+if doublePlot:
+	plt.plot(xs1,1e-5*Ps1,'--',label='Mass setup 1, spray dist. 20 cm')
+	plt.plot(xs,1e-5*Ps2,'-.',label='Mass setup 2, no substrate')
+	plt.legend(loc='upper right',prop={'size':15})
+		
+plt.autoscale(tight=True)
+#subplotti.yaxis.set_label_coords(xLabelCoord,0.5)
+#subplotti.set_xticklabels( () )
+#subplotti.set_xlim(xMin,xMax)
+#if separated:
+#subplotti.set_ylabel(xLabelCoord,0.5)
+#set_xticklabels( () )
+#set_xlim(xMin,xMax)
+fig.patch.set_facecolor('white')
+subplotti.yaxis.set_label_coords(xLabelCoord,0.5)
+subplotti.set_xlim(xMin,xMax)
+
+if separated:
+	fig2 = plt.figure()
+	subplotti = plt.subplot(111)
+	plt.xlabel(xLabelStr)
+	fig2.patch.set_facecolor('white')
+else:
+	subplotti = plt.subplot(312)
+#	subplotti.set_xticklabels( () )
+	plt.grid(True)
+
+#subplotti = plt.subplot(312)
+xsU = Udata[:,0]
+xsU = [xsU[i] - xNozzleExit for i in range(0,len(xsU))]
+UPlot = plt.plot(xsU,Udata[:,1],label='Mass setup 1, no substrate')
+plt.ylabel('Velocity [m/s]')
+#plt.xlabel(xLabelStr)
+if doublePlot:
+	plt.plot(xs1,Udata1[:,1],'--',label='Mass setup 1, spray dist. 20 cm')
+	plt.plot(xs,Udata2[:,1],'-.',label='Mass setup 2, no substrate')
+#plt.legend(loc='upper right',prop={'size':15})
+plt.grid(True)
+plt.autoscale(tight=True)
+
+#if separated:
+#	yaxis.set_label_coords(xLabelCoord,0.5)
+#	set_xticklabels( () )
+#	set_xlim(xMin,xMax)
+
+#else:
+subplotti.yaxis.set_label_coords(xLabelCoord,0.5)
+subplotti.set_xticklabels( () )
+subplotti.set_xlim(xMin,xMax)
+
+
+if separated:
+	fig3 = plt.figure()
+	subplotti = plt.subplot(111)
+	plt.xlabel(xLabelStr)
+else:
+	subplotti = plt.subplot(313)
+	plt.grid(True)
+
+'''
+fig3 = plt.figure()
+subplotti = plt.subplot(111)
+print max(Ts)
+'''
+
+TPlot = plt.plot(xs,Ts,label='Mass setup 1, no substrate')
+plt.ylabel('Temperature [K]')
+plt.xlabel(xLabelStr)
+if doublePlot:
+	plt.plot(xs1,Ts1,'--',label='Mass setup 1, spray dist. 20 cm')
+	plt.plot(xs,Ts2,'-.',label='Mass setup 2, no substrate')
+	plt.legend(loc='upper right',prop={'size':15})
+		
+plt.grid(True)
+plt.autoscale(tight=True)
+subplotti.yaxis.set_label_coords(xLabelCoord,0.5)
+subplotti.set_xlim(xMin,xMax)
+
+#plt.figure()
+
+
+
+#plt.subplot(224)
+#TPlot = plt.plot(xs,rhos)
+#plt.ylabel("Density [kg/m$^3$]")
+#plt.xlabel(xLabelStr)
+#plt.autoscale(tight=True)
+#plt.grid(True)
+
+#fig3.patch.set_facecolor('white')
+'''
+n = len(xs)-1
+fig2 = plt.figure()
+fig2.patch.set_facecolor('white')
+plt.plot(xs,N2s,'k',label='N$_2$')
+plt.plot(xs,C3H6s,'r',label="C$_3$H$_6$")
+plt.plot(xs,O2s,'g',label="O$_2$")
+plt.plot(xs,CO2s,'r--',label="CO$_2$")
+plt.plot(xs,H2Os,'g--',label="H$_2$O")
+plt.plot(xs,COs,'b--',label="CO")
+plt.plot(xs,OHs,'k--',label="OH")
+plt.plot(xs,Os,'r-.',label="O")
+plt.plot(xs,Hs,'g-.',label="H")
+plt.ylabel("Mass fraction",fontsize=16)
+plt.xlabel(xLabelStr)
+plt.grid(True)
+plt.autoscale(tight=True)
+#plt.xlim((min(xs),0.201))
+plt.ylim((-0.006,1.004))
+plt.legend(loc='upper center',bbox_to_anchor=(0.5, 1.00),ncol=3,prop={'size':15})
+'''
+if separated==False:
+	plt.subplot(311)
+plt.title(str(latestTime) + ' ' + wrkDir)
+os.chdir('/home/tptatu/Dropbox/Koulu/Dippa/Latex/images')
+#plt.savefig('asdasd.png')
+plt.show()
+	

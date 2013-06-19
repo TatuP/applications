@@ -1,0 +1,98 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.1                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     tatunCentralFoam;
+
+startFrom       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         0.00097;
+
+deltaT          1e-6;
+
+writeControl    adjustableRunTime;
+
+writeInterval   1e-6;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  6;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable true;
+
+adjustTimeStep  yes;
+
+maxCo           0.5;
+
+libs ( "libgroovyBC.so" ) ;
+
+#include "$FOAM_TEMPS/calculatePhi"
+functions
+{
+    cuttingplane_average
+    {
+        type            faceSource;
+        functionObjectLibs ("libfieldFunctionObjects.so");
+
+        enabled         true;
+        outputControl   outputTime;
+
+        // Output to log&file (true) or to file only
+        log             true;
+
+        // Output field values as well
+        valueOutput     true;  //true;
+
+        // Type of source: patch/faceZone/sampledSurface
+        source          sampledSurface;
+
+        sampledSurfaceDict
+        {
+                type cuttingPlane;
+                planeType           pointAndNormal;
+                pointAndNormalDict
+                {
+                        basePoint       (0.79e-2 0.1e-2 0);  // x=0.79e-2 is near the end of straight part
+                        normalVector    (0 1 0);
+                }
+                source cells; // sample cells or boundaryFaces
+                interpolate true;
+        }
+
+        // Operation: areaAverage/sum/weightedAverage ...
+        operation       sum;
+
+        fields
+        (
+            rho
+        );
+    }
+}
+
+
+// ************************************************************************* //

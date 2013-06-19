@@ -1,0 +1,198 @@
+
+functions
+{
+    phi_pipeStart
+    {
+        type            faceSource;
+        functionObjectLibs ("libfieldFunctionObjects.so");
+
+        enabled         true;
+        outputControl   outputTime;
+
+        // Output to log&file (true) or to file only
+        log             true;
+
+        // Output field values as well
+        valueOutput     false; //true;
+
+        // Type of source: patch/faceZone/sampledSurface
+        source          sampledSurface;
+
+        sampledSurfaceDict
+        {
+                type cuttingPlane;
+                planeType           pointAndNormal;
+                pointAndNormalDict
+                {
+                        basePoint       (-3.3e-2 0 0);  // x=0.79e-2 is near the end of straight part
+                        normalVector    (1 0 0);
+                }
+                source cells; // sample cells or boundaryFaces
+                interpolate true;
+        }
+
+        // Operation: areaAverage/sum/weightedAverage ...
+        operation       areaIntegrate;
+
+        fields
+        (
+           rhoU 
+        );
+    }
+    phi_pipeEnd
+    {
+        type            faceSource;
+        functionObjectLibs ("libfieldFunctionObjects.so");
+
+        enabled         true;
+        outputControl   outputTime;
+
+        // Output to log&file (true) or to file only
+        log             true;
+
+        // Output field values as well
+        valueOutput     false; //true;
+
+        // Type of source: patch/faceZone/sampledSurface
+        source          sampledSurface;
+
+        sampledSurfaceDict
+        {
+                type cuttingPlane;
+                planeType           pointAndNormal;
+                pointAndNormalDict
+                {
+                        basePoint       (-2.0e-2 0 0);  // x=0.79e-2 is near the end of straight part
+                        normalVector    (1 0 0);
+                }
+                source cells; // sample cells or boundaryFaces
+                interpolate true;
+        }
+
+        // Operation: areaAverage/sum/weightedAverage ...
+        operation       areaIntegrate;
+
+        fields
+        (
+           rhoU 
+        );
+    }
+    phi_throat
+    {
+        type            faceSource;
+        functionObjectLibs ("libfieldFunctionObjects.so");
+
+        enabled         true;
+        outputControl   outputTime;
+
+        // Output to log&file (true) or to file only
+        log             true;
+
+        // Output field values as well
+        valueOutput     false; //true;
+
+        // Type of source: patch/faceZone/sampledSurface
+        source          sampledSurface;
+
+        sampledSurfaceDict
+        {
+                type cuttingPlane;
+                planeType           pointAndNormal;
+                pointAndNormalDict
+                {
+                        basePoint       (0.5e-2 0 0);  // x=0.79e-2 is near the end of straight part
+                        normalVector    (1 0 0);
+                }
+                source cells; // sample cells or boundaryFaces
+                interpolate true;
+        }
+
+        // Operation: areaAverage/sum/weightedAverage ...
+        operation       areaIntegrate;
+
+        fields
+        (
+           rhoU 
+        );
+    }
+    phi_nozzleEnd
+    {
+        type            faceSource;
+        functionObjectLibs ("libfieldFunctionObjects.so");
+
+        enabled         true;
+        outputControl   outputTime;
+
+        // Output to log&file (true) or to file only
+        log             true;
+
+        // Output field values as well
+        valueOutput     false; //true;
+
+        // Type of source: patch/faceZone/sampledSurface
+        source          sampledSurface;
+
+        sampledSurfaceDict
+        {
+                type cuttingPlane;
+                planeType           pointAndNormal;
+                pointAndNormalDict
+                {
+                        basePoint       (5.7e-2 0 0);  // x=0.79e-2 is near the end of straight part
+                        normalVector    (1 0 0);
+                }
+                source cells; // sample cells or boundaryFaces
+                interpolate true;
+        }
+
+        // Operation: areaAverage/sum/weightedAverage ...
+        operation       areaIntegrate;
+
+        fields
+        (
+           rhoU 
+        );
+    }
+    probeNozzleExit
+    {
+        type            probes;
+        functionObjectLibs ("libfieldFunctionObjects.so");
+
+        enabled         true;
+        outputControl   outputTime;
+
+        // Output to log&file (true) or to file only
+        log             true;
+
+        // Output field values as well
+        valueOutput     false; //true;
+
+        // Type of source: patch/faceZone/sampledSurface
+        //source          sampledSurface;
+
+        /*sampledSurfaceDict
+        {
+                type cuttingPlane;
+                planeType           pointAndNormal;
+                pointAndNormalDict
+                {
+                        basePoint       (5.7e-2 0 0);  // x=0.79e-2 is near the end of straight part
+                        normalVector    (1 0 0);
+                }
+                source cells; // sample cells or boundaryFaces
+                interpolate true;
+        }*/
+
+        // Operation: areaAverage/sum/weightedAverage ...
+        //operation       areaIntegrate;
+	probeLocations
+	(
+	  (0.062075 0.010234 0)
+	);
+        fields
+        (
+           p
+        );
+    }
+}
+}

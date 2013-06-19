@@ -1,0 +1,29 @@
+/**/
+species
+(
+    O2
+    H2O
+    C3H6
+    CO2
+    N2
+    CO
+    O
+    OH
+    H2
+    H
+);
+
+reactions
+{
+
+    Reaction
+    {
+        type         irreversibleinfiniteReaction;
+        //reaction     "C3H6 + 3.2843O2 = 2.2927CO + 0.7073CO2 + 0.4754H + 0.7199H2 + rH2O +0.3720000000000018O + 0.745OH";
+	//reaction     "C3H6 + 3.2843O2 = 2.2927CO + 0.7073CO2 + 0.4754H + 0.7199H2 + 1.7792H2O + 0.1905O ";
+	reaction     "C3H6 + 3.1017O2 = 2.2927CO + 0.7073CO2 + 0.4754H + 0.7199H2 + 1.7792H2O + 0.1905O + 0.5264OH";
+        //reaction     "C3H6 + 3.382O2 = 2.085CO + 0.915CO2 + 0.433H + 0.544H2 + 1.918H2O + 0.288O + 0.643OH";
+        //reaction     "C3H6 + 4.5O2 = 3CO2 + 3H2O";
+    }
+
+}

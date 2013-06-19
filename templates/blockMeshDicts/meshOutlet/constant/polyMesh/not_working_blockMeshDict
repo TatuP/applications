@@ -1,0 +1,581 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.1                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+convertToMeters 0.01;
+// x-length of converging part: 15.6 mm
+// left radius of converging part: 3.912 mm (7.16/2 + 15.6*tan(12*pi/180) mm)
+// right radius of converging part: 3.58 mm
+// fraction of a single gas inlet from the whole radConvRight
+// fraction of a single mid wall region (in total two between the three inlets)
+// x-length of straight part: 7.95 mm
+// x-length of diverging part: 54 mm
+// right radius of diverging part: 5.47 mm
+// x-length of outlet: 300 mm
+// y-length of outlet above nozzle: 300 mm
+ 
+vertices
+(
+// cooling cell
+//xl = 0.0
+//xr = lenConv
+
+
+    (-1.56 0.352044 -0.01)
+    (0.0 0.3222 -0.01) // 1
+    (0.0 0.358 -0.01)
+    (-1.56 0.39116 -0.01) // 3
+    (-1.56 0.352044  0.01)	
+    (0.0 0.3222  0.01)	// 5
+    (0.0 0.358  0.01)
+    (-1.56 0.39116  0.01)	// 7
+// below cooling cell
+    (-1.56 0.215138 0.01)	// 8
+    (0.0 0.1969 0.01)	// 9
+    			// 5 
+			// 4
+    (-1.56 0.215138 -0.01) // 10
+    (0.0 0.1969 -0.01) // 11
+			// 1
+			// 0
+// fuelAir
+    (-1.56 0.176022 0.01)	// 12
+    (0.0 0.1611 0.01)	// 13
+			// 9 
+			// 8
+    (-1.56 0.176022 -0.01)// 14
+    (0.0 0.1611 -0.01)// 15
+			// 11 
+			// 10
+// below fuelAir
+    (-1.56 0.039116 0.01)	// 16
+    (0.0 0.0358 0.01)	// 17
+			// 13 
+			// 12
+    (-1.56 0.039116 -0.01)// 18
+    (0.0 0.0358 -0.01)// 19
+ 			// 15
+			// 14
+// carrier
+    (-1.56 6.93889390391e-18 0.01) // 20
+    (0.0 0.0 0.01) // 21
+			// 17
+			// 16
+    (-1.56 6.93889390391e-18 -0.01)// 22
+    (0.0 0.0 -0.01)// 23
+			// 19
+			// 18
+// 22 23 19 18 20 21 17 16
+// STRAIGHT PART BEGINS
+
+
+
+       		         // 5
+    (0.795 0.3222 0.01) // 24
+    (0.795 0.358 0.01) // 25
+			 // 6
+			 // 1
+    (0.795 0.3222 -0.01)// 26
+    (0.795 0.358 -0.01)// 27	
+			 // 2
+// below cooling cell
+				// 9
+    (0.795 0.1969 0.01)	// 28 (8)
+				// 24
+			        // 5
+				// 11
+    (0.795 0.1969 -0.01)	// 29 (10)
+ 				// 26
+				// 1
+
+// fuelAir
+   				// 13
+    (0.795 0.1611 0.01)	// 30 
+				// 28 (8)
+				// 9
+				// 15
+    (0.795 0.1611 -0.01)	// 31 (10)
+    				// 29
+				// 11
+
+// below fuelAir
+    				// 17
+    (0.795 0.0358 0.01)	// 32 
+				// 30
+				// 13
+				// 19
+    (0.795 0.0358 -0.01)	// 33
+				// 31
+				// 15   
+// 19 33 31 15 17 32 30 13
+
+// carrier
+				// 21
+    (0.795 0.0 0.01)	// 34
+				// 32
+				// 17
+				// 23 
+    (0.795 0.0 -0.01)	// 35
+				// 33
+				// 19
+// 23 35 33 19 21 34 32 17 
+
+// DIVERGING PART BEGINS
+
+
+
+
+// cooling part
+       		         	// 24 
+    (6.195 0.4923 0.01) 	// 36 
+    (6.195 0.547 0.01) 	// 37
+			 	// 25
+			 	// 26
+    (6.195 0.4923 -0.01)	// 38
+    (6.195 0.547 -0.01)	// 39	
+			 	// 27 
+// 26 38 39 27 24 36 37 25
+// below cooling cell
+				// 28
+    (6.195 0.30085 0.01)	// 40
+				// 36
+			        // 24
+				// 29
+    (6.195 0.30085 -0.01)	// 41
+ 				// 38
+				// 26
+ // 29 41 38 26 28 40 36 24
+// fuelAir
+   				// 30
+    (6.195 0.24615 0.01)	// 42 
+				// 40 
+				// 28
+				// 31
+    (6.195 0.24615 -0.01)	// 43 
+    				// 41
+				// 29
+// 31 43 41 29 30 42 40 28
+// below fuelAir
+    				// 32
+    (6.195 0.0547 0.01)	// 44 
+				// 42
+				// 30
+				// 33
+    (6.195 0.0547 -0.01)	// 45
+				// 43
+				// 31   
+// 33 45 43 31 32 44 42 30
+
+// carrier
+				// 34
+    (6.195 4.85722573274e-17 0.01)	// 46
+				// 44
+				// 32
+				// 35 
+    (6.195 4.85722573274e-17 -0.01)	// 47
+				// 45
+				// 33
+// 35 47 45 33 34 46 44 32 
+
+
+// OUTLET PART BEGINS
+
+
+
+
+// cooling part
+       		         	// 36 
+    (36.195 0.4923 0.01) 	// 48
+    (36.195 0.547 0.01) 	// 49
+			 	// 37
+			 	// 38
+    (36.195 0.4923 -0.01)	// 50
+    (36.195 0.547 -0.01)	// 51	
+			 	// 39
+// 38 50 51 39 36 48 49 37
+// below cooling cell
+				// 40
+    (36.195 0.30085 0.01)	// 52
+				// 48 
+			        // 36
+				// 41 
+    (36.195 0.30085 -0.01)	// 53
+ 				// 50 
+				// 38
+ // 41 53 50 38 40 52 48 36
+// fuelAir
+   				// 42
+    (36.195 0.24615 0.01)	// 54 
+				// 52 
+				// 40
+				// 43
+    (36.195 0.24615 -0.01)	// 55 
+    				// 53
+				// 41
+// 43 55 53 41 42 54 52 40
+// below fuelAir
+    				// 44
+    (36.195 0.0547 0.01)	// 56 
+				// 54
+				// 42
+				// 45
+    (36.195 0.0547 -0.01)	// 57
+				// 55
+				// 43   
+// 45 57 55 43 44 56 54 42
+
+// carrier
+				// 46
+    (36.195 4.85722573274e-17 0.01)	// 58
+				// 56
+				// 44
+				// 47 
+    (36.195 4.85722573274e-17 -0.01)	// 59
+				// 57
+				// 45
+// 47 59 57 45 46 58 56 44
+
+
+// Upper wall
+
+
+
+       		         	// 37 // 37 49 new new 39 51 new new
+				// 49
+    (36.195 30.0 0.01) 	// 60
+    (6.195 30.0 0.01) 	// 61
+				// 39
+				// 51
+    (36.195 30.0 -0.01)	// 62
+    (6.195 30.0 -0.01)	// 63	
+			
+// 39 51 62 63 37 49 60 61
+
+
+// cooler pipe
+     (-1.599 0.352044 0.01)	// 64
+				// 4		
+				// 7
+     (-1.599 0.39116 0.01)	// 65
+     (-1.599 0.352044 -0.01)	// 66
+				// 0
+				// 3
+     (-1.599 0.39116 -0.01)	// 67
+ // 66 0 3 67 64 4 7 65
+
+// fuelAir pipe
+     (-1.599 0.176022 0.01)	// 68
+				// 12		
+				// 8
+     (-1.599 0.215138 0.01)	// 69
+     (-1.599 0.176022 -0.01)	// 70
+				// 14
+				// 10
+     (-1.599 0.215138 -0.01)	// 71
+ // 70 14 10 71 68 12 8 69
+
+// fuelAir pipe
+     (-1.599 6.93889390391e-18 0.01)	// 72
+				// 20		
+				// 16
+     (-1.599 0.039116 0.01)	// 73
+     (-1.599 6.93889390391e-18 -0.01)	// 74
+				// 22
+				// 18
+     (-1.599 0.039116 -0.01)	// 75
+ // 74 22 18 75 72 20 16 73
+
+);
+blocks
+(
+// number of mesh cells in y-direction inside the nozzle for a single inlet and single mid wall: 2, 7
+
+// number of mesh cells in x-direction inside the nozzle: 90
+// number of mesh cells in x-direction outside the nozzle: 150
+// number of mesh cells in y-direction outside and above the nozzle: 90
+// grading outside in x-direction: 3
+// grading outside and above the nozzle in 20
+
+ // conv 
+ // fracMiddles: 0.35
+    hex (0 1 2 3 4 5 6 7) (36 2 1) simpleGrading (2 0.7 1) 	// cooler
+    hex (10 11 1 0 8 9 5 4) (36 7 1) simpleGrading (2 1 1)	// below cooler
+    hex (14 15 11 10 12 13 9 8) (36 2 1) simpleGrading (2 1 1) // fuelAir
+    hex (18 19 15 14 16 17 13 12) (36 7 1) simpleGrading (2 1 1) // below fuelAir
+    hex (22 23 19 18 20 21 17 16) (36 2 1) simpleGrading (2 1 1) // carrier
+
+ // straight: 
+   // hex (22 23 19 18 20 21 17 16) (30 4 1) simpleGrading (1 1 1) // cooler
+    hex (1 26 27 2 5 24 25 6) (9 2 1) simpleGrading (1 0.7 1) // cooler 
+    hex (11 29 26 1 9 28 24 5) (9 7 1) simpleGrading (1 1 1) // below cooler
+    hex (15 31 29 11 13 30 28 9) (9 2 1) simpleGrading (1 1 1) // fuelAir
+    hex (19 33 31 15 17 32 30 13) (9 7 1) simpleGrading (1 1 1) // below fuelAir 
+    hex (23 35 33 19 21 34 32 17) (9 2 1) simpleGrading (1 1 1) // carrier
+
+ // 24 25 27 26 cooler right, 25 6 2 27 cooler top, 5 6 25 24 cooler front, 2 1 26 27 cooler back
+ // 26 29 28 24 below cooler right, 1 11 29 26 below cooler back, 9 5 24 28 below cooler front
+ // 29 31 30 28 fuelAir right, 11 15 31 29 fuelAir back, 13 9 28 30 fuelAir front
+ // 31 33 32 30 below fuelAir right, 15 19 33 31 below fuelAir back, 17 13 30 32 below fuelAir front
+ // 33 35 34 32 carrier right, 19 23 35 33 carrier back, 21 17 32 34 carrier front, 23 21 34 35 cooler bot 
+
+ // div:
+    hex (26 38 39 27 24 36 37 25) (63 2 1) simpleGrading (1 0.7 1) // cooler
+    hex (29 41 38 26 28 40 36 24) (63 7 1) simpleGrading (1 1 1) // below cooler
+    hex (31 43 41 29 30 42 40 28) (63 2 1) simpleGrading (1 1 1) // fuelAir
+    hex (33 45 43 31 32 44 42 30) (63 7 1) simpleGrading (1 1 1) // below fuelAir
+    hex (35 47 45 33 34 46 44 32) (63 2 1) simpleGrading (1 1 1) // carrier
+ // fronts: go left in second half, backs: go right in first half
+ // 27 26 38 39 cooler back, 24 25 37 36 cooler front, 39 27 25 37 cooler top 
+ // 26 29 41 38 below cooler back, 24 36 40 28 below cooler front
+ // 29 31 43 41 fuelAir back, 30 28 40 42 fuelAir front
+ // 31 33 45 43 below fuelAir back, 32 30 42 44 below fuelAir front 
+ // 33 35 47 45 carrier back, 34 32 44 46 carrier front, 35 47 46 34 carrier bot
+
+ // outlet:
+    hex (38 50 51 39 36 48 49 37) (150 2 1) simpleGrading (3 0.7 1) // cooler    
+    hex (41 53 50 38 40 52 48 36) (150 7 1) simpleGrading (3 1 1) // below cooler
+    hex (43 55 53 41 42 54 52 40) (150 2 1) simpleGrading (3 1 1) // fuelAir
+    hex (45 57 55 43 44 56 54 42) (150 7 1) simpleGrading (3 1 1) // below fuelAir
+    hex (47 59 57 45 46 58 56 44) (150 2 1) simpleGrading (3 1 1) // carrier
+ // 38 50 51 39 cooler back, 37 49 48 36 cooler front, 51 39 49 37 cooler top, 48 49 51 50 cooler right
+ // 41 53 50 38 below cooler back, 36 48 52 40 below cooler front, 52 48 50 53 below cooler right
+ // 43 55 53 41 fuelAir back, 40 52 54 42 fuelAir front, 54 52 53 55 fuelAir right
+ // 45 57 55 43 below fuelAir back, 42 54 56 44 below fuelAir front, 56 54 55 57 below fuelAir right
+ // 47 59 57 45 carrier back, 44 56 58 46 carrier front, 59 47 46 58 carrier bot, 58 56 57 59 carrier right
+
+ // upper outlet
+    hex (39 51 62 63 37 49 60 61) (150 90 1) simpleGrading (3 20 1) 
+ // 39 51 62 63 back, 61 60 49 37 front, 49 60 62 51 right, 39 63 61 37 left, 60 61 63 62 top
+/*
+ // cooler pipe
+    hex (66 0 3 67 64 4 7 65) (1 2 1) simpleGrading (1 0.7 1)
+ // 66 0 3 67 back, 65 7 4 64 front, 66 67 65 64 left, 0 66 64 4 bot, 3 67 65 7 top
+ // fuelAir pipe
+    hex (70 14 10 71 68 12 8 69) (1 2 1) simpleGrading (1 1 1)
+ // 70 14 10 71 back, 69 8 12 68 front, 70 71 69 68 left, 14 70 68 12 bot, 8 69 71 10 top
+ // carrier pipe
+    hex (74 22 18 75 72 20 16 73) (1 2 1) simpleGrading (1 1 1)
+ // 74 22 18 75 back, 73 16 20 72 front, 74 75 73 72 left, 22 74 72 20 bot, 16 73 75 18 top
+*/
+);
+
+edges
+(
+);
+
+boundary
+(
+/*    cooler
+    {
+        type empty;
+        faces
+        (
+// cooler pipe
+	//    (66 67 65 64) // left
+// conv
+//	    (4 0 3 7)   // cooler left
+//	   (8 10 0 4) // below cooler left	
+        );
+    }*/
+    fuelAir
+    {
+        type patch;
+        faces
+        (
+// conv
+	    (4 0 3 7)   // cooler left
+	   (8 10 0 4) // below cooler left	
+
+// conv
+	    (12 14 10 8) // fuelAir left
+// fuelAir pipe
+//            (70 71 69 68) // left
+	   (16 18 14 12) // below fuelAir left
+// conv	
+	    (20 22 18 16) // carrier left
+        );
+    }
+/*    carrier
+    {
+
+	type empty;
+	faces
+	(
+
+// carrier pipe
+	//    (74 75 73 72) // left
+
+	);
+    }*/
+    walls
+    {
+	type wall;
+	faces
+        (
+// conv
+	    (7 3 2 6) // cooler top
+// straight
+	    (25 6 2 27)  // cooler top
+// div
+            (39 27 25 37) //cooler top 
+// outlet
+	    (49 60 62 51) // above outlet right
+	    (48 49 51 50) // cooler right
+	    (52 48 50 53) // below cooler right
+	    (54 52 53 55) // fuelAir right
+	    (56 54 55 57) // below fuelAir right
+	    (58 56 57 59) // carrier right
+        );
+    }
+/*    midWalls
+    {
+	type wall;
+	faces
+        (
+// conv	
+
+// cooler pipe
+// 	   (0 66 64 4) // bot 
+//	   (3 67 65 7) // top
+// fuelAir pipe
+//	   (14 70 68 12) // bot
+//	   (8 69 71 10) // top
+// carrier pipe	    
+	   (16 73 75 18) // top
+        );
+    }*/
+    outlet
+    {
+        type patch;
+        faces
+        (
+// conv
+//     	    (7 3 2 6) // cooler top
+/*            (1 5 6 2) // cooler right (was in wrong circulation)
+	    (1 11 9 5)	// below cooler right
+	    (15 11 9 13) // fuelAir right
+	    (13 15 19 17) // below fuelAir right
+	    (17 19 23 21) // carrier right*/
+// straight 
+/*	    (24 25 27 26) // cooler right
+	    (26 29 28 24) // below cooler right
+	    (29 31 30 28) // fuelAir right
+	    (31 33 32 30) // below fuelAir right
+	    (33 35 34 32) // carrier right*/
+// outlet
+	(60 61 63 62) // above outlet top
+        (39 63 61 37) // above outlet left
+        );
+    }
+    symmetric
+    {
+	type symmetryPlane;
+	faces
+	(
+//	    (0 4 5 1) 	//  cooler bot
+// 	    (11 10 8 9) // below cooler bot
+//	    (15 14 12 13) // fuelAir bot
+//	    (17 19 18 16) // below fuelAir bot
+// conv
+	    (23 22 20 21) // carrier bot
+// straight
+	    (23 21 34 35) // cooler bot 
+	   // (11 15 13 9) //fuelAir right
+// div
+            (35 47 46 34) // carrier bot
+// outlet
+	     (59 47 46 58) // carrier bot
+// carrier pipe
+//	     (22 74 72 20) // bot,
+	);
+    }
+    frontAndBack
+    {
+        type empty;
+        faces
+        (
+// conv
+            (5 4 7 6)	// cooler front
+            (0 1 2 3)	// cooler back
+
+            (1 0 10 11) // below cooler back
+	    (9 8 4 5) 	// below cooler front
+
+            (13 12 8 9) // fuelAir front
+	    (11 10 14 15) // fuelAir back
+
+            (17 16 12 13) // below fuelAir front
+	    (15 14 18 19) // below fuelAir back
+
+ 	    (21 20 16 17) // carrier front
+	    (19 18 22 23) // carrier back
+// straight
+	    (2 1 26 27)  // cooler back
+	    (5 6 25 24)  // cooler front
+	    (1 11 29 26) // below cooler back
+	    (9 5 24 28)  // below cooler front
+ 	    (11 15 31 29) // fuelAir back
+	    (13 9 28 30)  // fuelAir front
+	    (15 19 33 31) // below fuelAir back
+	    (17 13 30 32) // below fuelAir front
+	    (19 23 35 33) // carrier back
+	    (21 17 32 34) // carrier front
+// div
+            (27 26 38 39) // cooler back, 
+	    (24 25 37 36) // cooler front
+	    (26 29 41 38) // below cooler back 
+	    (24 36 40 28) // below cooler front
+ 	    (29 31 43 41) // fuelAir back
+	    (30 28 40 42) // fuelAir front
+   	    (31 33 45 43) // below fuelAir back 
+	    (32 30 42 44) // below fuelAir front 
+ 	    (33 35 47 45) // carrier back
+	    (34 32 44 46) // carrier front
+
+// outlet nozzle
+	    (37 49 48 36) // cooler front
+	    (38 50 51 39) // cooler back,
+ 	    (41 53 50 38) // below cooler back
+	    (36 48 52 40) // below cooler front
+ 	    (43 55 53 41) // fuelAir back 
+	    (40 52 54 42) // fuelAir front
+ 	    (45 57 55 43) // below fuelAir back
+	    (42 54 56 44) // below fuelAir front
+ 	    (47 59 57 45) // carrier back
+	    (44 56 58 46) // carrier front 
+	    (39 51 62 63) // above back
+	    (61 60 49 37) // above front,
+
+/*
+// cooler pipe 
+  	    (66 0 3 67) // back 
+	    (65 7 4 64) // front,
+// fuelAir pipe
+	    (70 14 10 71) // back
+	    (69 8 12 68) // front
+// carrier pipe
+	    (74 22 18 75) // back
+	    (73 16 20 72) // front
+*/
+        );
+    }
+);
+
+mergePatchPairs
+(
+);
+
+// ************************************************************************* //
+

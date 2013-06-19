@@ -1,0 +1,106 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.1                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      setFieldsDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+/*defaultFieldValues
+(
+    volScalarFieldValue C3H6 0
+);*/
+
+regions
+(
+    // Set cell values
+    // (does zerogradient on boundaries)
+    boxToCell
+    {
+        //box (0 0 -1) (0.1461 0.292 1);
+        //box (-10.6 0.11 -0.01) (-2.5 0.282 0.01);
+	// boundingBox (-0.10599 -0.0008 -0.0001) (0.36195 0.3 0.0001)
+	
+	//box (-0.10599 0.0011 -0.0001) (-0.016 0.00282 0.0001); // converging fuelAir pipe
+	//box (-0.23 0.0011 -0.1) (-0.018 0.00342 0.1);  // straight fuelAir pipe
+	//box (-0.423 0.00383 -1) (-0.016 0.0582 1);  // straight cooler pipe
+	//box (-0.23 -0.0008 -0.0001) (-0.016 0.3 0.0001); // all straight pipes
+        //box (-0.23 0.0 -0.1) (-0.016 0.00109 0.1); // straight carrier pipe
+// yAxis moved
+	//box (-0.23 0.0111 -0.1) (-0.018 0.01342 0.1);  // straight fuelAir pipe
+	box (-0.423 0.01383 -1) (-0.016 0.0682 1);  // straight cooler pipe
+        fieldValues
+        (
+	    //volScalarFieldValue p 1.5e5
+	    // cooler mass fracs
+
+	    volScalarFieldValue O2 0.2544
+	    volScalarFieldValue N2 0.7456
+	    //fuelAir mass fracs
+	/*    volScalarFieldValue C3H6 0.2859
+	    volScalarFieldValue O2 0.7141
+	    olScalarFieldValue N2 0.0*/
+
+	    volScalarFieldValue O 0.0
+	    volScalarFieldValue OH 0.0
+	    volScalarFieldValue CO2 0.0
+	    volScalarFieldValue H2O 0.0
+	    volScalarFieldValue CO 0.0
+        );
+    }
+
+    boxToCell
+    {
+        //box (0 0 -1) (0.1461 0.292 1);
+        //box (-10.6 0.11 -0.01) (-2.5 0.282 0.01);
+	// boundingBox (-0.10599 -0.0008 -0.0001) (0.36195 0.3 0.0001)
+	
+	//box (-0.10599 0.0011 -0.0001) (-0.016 0.00282 0.0001); // converging fuelAir pipe
+	//box (-0.23 0.0011 -0.1) (-0.018 0.00342 0.1);  // straight fuelAir pipe
+	//box (-0.423 0.00383 -1) (-0.016 0.0582 1);  // straight cooler pipe
+	//box (-0.23 -0.0008 -0.0001) (-0.016 0.3 0.0001); // all straight pipes
+        //box (-0.23 0.0 -0.1) (-0.016 0.00109 0.1); // straight carrier pipe
+// yAxis moved
+	box (-0.23 0.0111 -0.1) (-0.016 0.01542 0.1);  // straight fuelAir pipe
+	//box (-0.423 0.001383 -1) (-0.016 0.00682 1);  // straight cooler pipe
+        fieldValues
+        (
+	    //volScalarFieldValue p 1.5e5
+	    // cooler mass fracs
+
+	    /*volScalarFieldValue O2 0.2544
+	    volScalarFieldValue N2 0.7456*/
+	    //fuelAir mass fracs
+	    volScalarFieldValue C3H6 0.2859
+	    volScalarFieldValue O2 0.7141
+	    
+	    volScalarFieldValue N2 0.0
+	    volScalarFieldValue O 0.0
+	    volScalarFieldValue OH 0.0
+	    volScalarFieldValue CO2 0.0
+	    volScalarFieldValue H2O 0.0
+	    volScalarFieldValue CO 0.0
+        );
+    }
+
+    // Set patch values (using ==)
+   /* boxToFace
+    {
+        box (0 0 -1) (0.1461 0.292 1);
+
+        fieldValues
+        (
+            volScalarFieldValue gamma 1
+        );
+    }*/
+);
+
+// ************************************************************************* //

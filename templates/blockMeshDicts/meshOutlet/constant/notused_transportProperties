@@ -1,0 +1,65 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  1.6                                   |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      transportProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+transportModel  Newtonian;
+nu		nu [ 0 2 -1 0 0 0 0 ] 1e-5;
+
+
+/*O2 // Liquid
+{
+    viscosityModel Newtonian;	
+    //transportModel  sutherlandTransport;
+    As              1.67212e-06;
+    Ts              170.672;
+}
+
+CO2 // Liquid
+{
+    //transportModel  sutherlandTransport;
+    As              1.67212e-06;
+    Ts              170.672;
+}
+
+CH4 // Liquid
+{
+    //transportModel  sutherlandTransport;
+    As              1.67212e-06;
+    Ts              170.672;
+}
+
+H2O // Liquid
+{
+    //transportModel  sutherlandTransport;
+    As              1.67212e-06;
+    Ts              170.672;
+}*/
+
+
+/*phase2 // Air
+{
+    transportModel  Newtonian;
+    nu              nu [ 0 2 -1 0 0 0 0 ] 1.48e-05;
+    rho             rho [ 1 -3 0 0 0 0 0 ] 1;
+    cp		      cp [ 0 2 -2 -1 0 0 0 ] 1009;
+    kT	      kT [ 1 1 -3 -1 0 0 0 ] 2.85e-02;
+}*/
+
+//sigma           sigma [ 1 0 -2 0 0 0 0 ] 0.07;
+
+
+// ************************************************************************* //
+
+

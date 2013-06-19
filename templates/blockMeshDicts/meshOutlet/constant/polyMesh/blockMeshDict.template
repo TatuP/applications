@@ -1,0 +1,1120 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.1                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+convertToMeters 0.01;
+// x-length of converging part: 15.6 mm
+$$lenConv = 1.56
+
+
+// right radius of converging part: 3.58 mm
+$$radConvRight = 0.358
+$$radConvLeft = radConvRight+(lenConv*tan(12.0*3.141593/180.0))
+// left radius of converging part: $10*radConvLeft$ mm (7.16/2 + 15.6*tan(12*pi/180) mm)
+// tan(..) = $tan(12.0*3.141593/180.0)$
+// fraction of a single gas inlet from the whole radConvRight ( cooler + fuelAir)
+$$ fracInlet = 0.2 
+// carrier separately
+$$ fracCarrier = 0.1 
+// fraction of a single mid wall region (in total two between the three inlets)
+$$ fracMiddles = 0.25  
+// two mid walls --> 2*0.21 + 0.025 + 2*0.2775 = 1
+// x-length of straight part: 7.95 mm
+$$lenStra = 0.795
+// x-length of diverging part: 54 mm
+$$lenDiv = 5.4
+// right radius of diverging part: 5.47 mm
+$$ radDivRight = 0.547
+// x-length of outlet: 300 mm
+$$ xLenOut = 30.0
+// y-length of outlet above nozzle: 300 mm
+$$ yLenOut = 12.0
+// nozzle thickness: 5.47 mm (same as div right radius)
+$$ nozzleThickness = 0.547
+
+ 
+vertices
+(
+// cooling cel
+//xl = 0.0
+//xr = lenConv
+
+// CONVERGING PART
+
+$$xlC = -lenConv
+$$xrC = 0.0
+
+$$ylUpC = radConvLeft
+$$ylLoC = radConvLeft*(1-fracInlet)
+$$yrUpC = radConvRight
+$$yrLoC = radConvRight*(1-fracInlet)
+    ($xlC$ $ylLoC$ -0.01)
+    ($xrC$ $yrLoC$ -0.01) // 1
+    ($xrC$ $yrUpC$ -0.01)
+    ($xlC$ $ylUpC$ -0.01) // 3
+    ($xlC$ $ylLoC$  0.01)	
+    ($xrC$ $yrLoC$  0.01)	// 5
+    ($xrC$ $yrUpC$  0.01)
+    ($xlC$ $ylUpC$  0.01)	// 7
+// below cooling cell
+$$ylLoAC = ylLoC - fracMiddles*radConvLeft
+$$yrLoAC = yrLoC - fracMiddles*radConvRight
+    ($xlC$ $ylLoAC$ 0.01)	// 8
+    ($xrC$ $yrLoAC$ 0.01)	// 9
+    			// 5 
+			// 4
+    ($xlC$ $ylLoAC$ -0.01) // 10
+    ($xrC$ $yrLoAC$ -0.01) // 11
+			// 1
+			// 0
+// fuelAir
+$$ylLoBC = ylLoAC - fracInlet*radConvLeft
+$$yrLoBC = yrLoAC - fracInlet*radConvRight
+    ($xlC$ $ylLoBC$ 0.01)	// 12
+    ($xrC$ $yrLoBC$ 0.01)	// 13
+			// 9 
+			// 8
+    ($xlC$ $ylLoBC$ -0.01)// 14
+    ($xrC$ $yrLoBC$ -0.01)// 15
+			// 11 
+			// 10
+// below fuelAir
+$$ylLoCC = ylLoBC - fracMiddles*radConvLeft
+$$yrLoCC = yrLoBC - fracMiddles*radConvRight
+    ($xlC$ $ylLoCC$ 0.01)	// 16
+    ($xrC$ $yrLoCC$ 0.01)	// 17
+			// 13 
+			// 12
+    ($xlC$ $ylLoCC$ -0.01)// 18
+    ($xrC$ $yrLoCC$ -0.01)// 19
+ 			// 15
+			// 14
+// carrier
+$$ylLoDC = ylLoCC - fracCarrier*radConvLeft
+$$yrLoDC = yrLoCC - fracCarrier*radConvRight
+    ($xlC$ $ylLoDC$ 0.01) // 20
+    ($xrC$ $yrLoDC$ 0.01) // 21
+			// 17
+			// 16
+    ($xlC$ $ylLoDC$ -0.01)// 22
+    ($xrC$ $yrLoDC$ -0.01)// 23
+			// 19
+			// 18
+// 22 23 19 18 20 21 17 16
+// STRAIGHT PART BEGINS
+
+$$xlS = 0.0
+$$xrS = lenStra
+
+$$radConvLeftS = radConvRight
+$$radConvRightS = radConvRight
+$$ylUpS = radConvLeftS
+$$ylLoS = radConvLeftS*(1-fracInlet)
+$$yrUpS = radConvRightS
+$$yrLoS = radConvRightS*(1-fracInlet)
+
+       		         // 5
+    ($xrS$ $yrLoS$ 0.01) // 24
+    ($xrS$ $yrUpS$ 0.01) // 25
+			 // 6
+			 // 1
+    ($xrS$ $yrLoS$ -0.01)// 26
+    ($xrS$ $yrUpS$ -0.01)// 27	
+			 // 2
+// below cooling cell
+$$yrLoAS = yrLoS - fracMiddles*radConvRightS
+				// 9
+    ($xrS$ $yrLoAS$ 0.01)	// 28 (8)
+				// 24
+			        // 5
+				// 11
+    ($xrS$ $yrLoAS$ -0.01)	// 29 (10)
+ 				// 26
+				// 1
+
+// fuelAir
+$$yrLoBS = yrLoAS - fracInlet*radConvRightS
+   				// 13
+    ($xrS$ $yrLoBS$ 0.01)	// 30 
+				// 28 (8)
+				// 9
+				// 15
+    ($xrS$ $yrLoBS$ -0.01)	// 31 (10)
+    				// 29
+				// 11
+
+// below fuelAir
+$$yrLoCS = yrLoBS - fracMiddles*radConvRightS
+    				// 17
+    ($xrS$ $yrLoCS$ 0.01)	// 32 
+				// 30
+				// 13
+				// 19
+    ($xrS$ $yrLoCS$ -0.01)	// 33
+				// 31
+				// 15   
+// 19 33 31 15 17 32 30 13
+
+// carrier
+$$ylLoDS = ylLoCS - fracCarrier*radConvLeftS
+$$yrLoDS = yrLoCS - fracCarrier*radConvRightS
+				// 21
+    ($xrS$ $yrLoDS$ 0.01)	// 34
+				// 32
+				// 17
+				// 23 
+    ($xrS$ $yrLoDS$ -0.01)	// 35
+				// 33
+				// 19
+// 23 35 33 19 21 34 32 17 
+
+// DIVERGING PART BEGINS
+
+$$xlD = lenStra
+$$xrD = lenDiv + lenStra
+
+$$radConvLeftD = radConvRight
+$$radConvRightD = radDivRight
+
+$$yrUpD = radConvRightD
+$$yrLoD = radConvRightD*(1-fracInlet)
+
+// cooling part
+       		         	// 24 
+    ($xrD$ $yrLoD$ 0.01) 	// 36 
+    ($xrD$ $yrUpD$ 0.01) 	// 37
+			 	// 25
+			 	// 26
+    ($xrD$ $yrLoD$ -0.01)	// 38
+    ($xrD$ $yrUpD$ -0.01)	// 39	
+			 	// 27 
+// 26 38 39 27 24 36 37 25
+// below cooling cell
+$$yrLoAD = yrLoD - fracMiddles*radConvRightD
+				// 28
+    ($xrD$ $yrLoAD$ 0.01)	// 40
+				// 36
+			        // 24
+				// 29
+    ($xrD$ $yrLoAD$ -0.01)	// 41
+ 				// 38
+				// 26
+ // 29 41 38 26 28 40 36 24
+// fuelAir
+$$yrLoBD = yrLoAD - fracInlet*radConvRightD
+   				// 30
+    ($xrD$ $yrLoBD$ 0.01)	// 42 
+				// 40 
+				// 28
+				// 31
+    ($xrD$ $yrLoBD$ -0.01)	// 43 
+    				// 41
+				// 29
+// 31 43 41 29 30 42 40 28
+// below fuelAir
+$$yrLoCD = yrLoBD - fracMiddles*radConvRightD
+    				// 32
+    ($xrD$ $yrLoCD$ 0.01)	// 44 
+				// 42
+				// 30
+				// 33
+    ($xrD$ $yrLoCD$ -0.01)	// 45
+				// 43
+				// 31   
+// 33 45 43 31 32 44 42 30
+
+// carrier
+$$ylLoDD = ylLoCD - fracCarrier*radConvLeftD
+$$yrLoDD = yrLoCD - fracCarrier*radConvRightD
+				// 34
+    ($xrD$ $yrLoDD$ 0.01)	// 46
+				// 44
+				// 32
+				// 35 
+    ($xrD$ $yrLoDD$ -0.01)	// 47
+				// 45
+				// 33
+// 35 47 45 33 34 46 44 32 
+
+
+// OUTLET PART BEGINS
+
+$$xlO = lenStra + lenDiv
+$$xrO = lenDiv + lenStra + lenOut
+
+$$radConvLeftO = radDivRight
+$$radConvRightO = radDivRight
+
+$$yrUpO = radConvRightO
+$$yrLoO = radConvRightO*(1-fracInlet)
+
+// cooling part
+       		         	// 36 
+    ($xrO$ $yrLoO$ 0.01) 	// 48
+    ($xrO$ $yrUpO$ 0.01) 	// 49
+			 	// 37
+			 	// 38
+    ($xrO$ $yrLoO$ -0.01)	// 50
+    ($xrO$ $yrUpO$ -0.01)	// 51	
+			 	// 39
+// 38 50 51 39 36 48 49 37
+// below cooling cell
+$$yrLoAO = yrLoO - fracMiddles*radConvRightO
+				// 40
+    ($xrO$ $yrLoAO$ 0.01)	// 52
+				// 48 
+			        // 36
+				// 41 
+    ($xrO$ $yrLoAO$ -0.01)	// 53
+ 				// 50 
+				// 38
+ // 41 53 50 38 40 52 48 36
+// fuelAir
+$$yrLoBO = yrLoAO - fracInlet*radConvRightO
+   				// 42
+    ($xrO$ $yrLoBO$ 0.01)	// 54 
+				// 52 
+				// 40
+				// 43
+    ($xrO$ $yrLoBO$ -0.01)	// 55 
+    				// 53
+				// 41
+// 43 55 53 41 42 54 52 40
+// below fuelAir
+$$yrLoCO = yrLoBO - fracMiddles*radConvRightO
+    				// 44
+    ($xrO$ $yrLoCO$ 0.01)	// 56 
+				// 54
+				// 42
+				// 45
+    ($xrO$ $yrLoCO$ -0.01)	// 57
+				// 55
+				// 43   
+// 45 57 55 43 44 56 54 42
+
+// carrier
+$$ylLoDO = ylLoCO - fracCarrier*radConvLeftO
+$$yrLoDO = yrLoCO - fracCarrier*radConvRightO
+				// 46
+    ($xrO$ $yrLoDO$ 0.01)	// 58
+				// 56
+				// 44
+				// 47 
+    ($xrO$ $yrLoDO$ -0.01)	// 59
+				// 57
+				// 45
+// 47 59 57 45 46 58 56 44
+
+
+// OUTLET PART BEGINS
+$$yNozzleOut = radDivRight + nozzleThickness
+
+
+$$xlO = lenStra + lenDiv
+$$xrO = lenDiv + lenStra + xLenOut
+
+       		         	// 37 // 37 49 new new 39 51 new new
+				// 49
+    ($xrO$ $yNozzleOut$ 0.01) 	// 60
+    ($xlO$ $yNozzleOut$ 0.01) 	// 61
+				// 39
+				// 51
+    ($xrO$ $yNozzleOut$ -0.01)	// 62
+    ($xlO$ $yNozzleOut$ -0.01)	// 63	
+			
+// 39 51 62 63 37 49 60 61
+
+
+// INLET PIPES, // 6 degrees, in reality it's 12 degrees
+
+$$xlCP = -3.5
+$$orientAngle = 12.0*3.14159/180.0 
+$$rUp = abs(xlCP-xlC)
+//(ylUpC-ylLoC)
+$$addedLength = (ylUpC-ylLoC)*sin(orientAngle)
+$$rLo = rUp+addedLength
+$$xOrientUp = -rUp*cos(orientAngle)-lenConv
+$$yOrientUp = rUp*sin(orientAngle)+radConvLeft
+
+$$xOrientLo = -rLo*cos(orientAngle)-lenConv
+$$yOrientLo = rLo*sin(orientAngle)+ylLoC
+
+//yOrientUp = $yOrientUp$
+//yOrientLo = $yOrientLo$
+//sin(orientAngle) = $sin(orientAngle)$
+// cooler pipe
+     ($xOrientLo$ $yOrientLo$ 0.01) // ($xlCP$ $ylLoC$ 0.01)	// 64
+				// 4		
+				// 7
+     ($xOrientUp$ $yOrientUp$ 0.01) //($xlCP$ $ylUpC$ 0.01)	// 65
+     ($xOrientLo$ $yOrientLo$ -0.01) //($xlCP$ $ylLoC$ -0.01)	// 66
+				// 0
+				// 3
+     ($xOrientUp$ $yOrientUp$ -0.01) //($xlCP$ $ylUpC$ -0.01)	// 67
+ // 66 0 3 67 64 4 7 65
+
+// fuelAir pipe
+     ($xlCP$ $ylLoBC$ 0.01)	// 68
+				// 12		
+				// 8
+     ($xlCP$ $ylLoAC$ 0.01)	// 69
+     ($xlCP$ $ylLoBC$ -0.01)	// 70
+				// 14
+				// 10
+     ($xlCP$ $ylLoAC$ -0.01)	// 71
+ // 70 14 10 71 68 12 8 69
+
+// fuelAir pipe
+     ($xlCP$ $ylLoDC$ 0.01)	// 72
+				// 20		
+				// 16
+     ($xlCP$ $ylLoCC$ 0.01)	// 73
+     ($xlCP$ $ylLoDC$ -0.01)	// 74
+				// 22
+				// 18
+     ($xlCP$ $ylLoCC$ -0.01)	// 75
+ // 74 22 18 75 72 20 16 73
+
+// outlet region
+
+$$xlO = lenStra + lenDiv
+$$xrO = lenDiv + lenStra + xLenOut
+
+       		         	// 61 
+				// 60
+    ($xrO$ $yLenOut$ 0.01) 	// 76
+    ($xlO$ $yLenOut$ 0.01) 	// 77
+				// 63
+				// 62
+    ($xrO$ $yLenOut$ -0.01)	// 78
+    ($xlO$ $yLenOut$ -0.01)	// 79	
+
+
+
+
+);
+
+blocks
+(
+// number of mesh cells in y-direction inside the nozzle for a single inlet and single mid wall: $yNgas$, $yNmid$
+// originally in total 2*7 + 3*2 = 20 cells, now 2*10 + 2*8 + 1 = 37 cells
+$$yNmid = 5
+$$yNgas = 4
+$$yNcooler = 4
+$$yNcarrier = 2
+
+
+// number of mesh cells in x-direction inside the nozzle: $xN$
+$$ xN = 240
+
+// number of mesh cells in x-direction outside the nozzle: $xNout$
+$$xNout = 400
+// number of mesh cells in y-direction in the nozzle thickness part
+$$yNnozzleOut = 28/2
+$$yNozzleGrading = 4 
+// number of mesh cells in y-direction outside and above the nozzle: $yNout$
+$$ yNout = 20
+// grading outside in x-direction: $xGrade$
+$$xGrade = 3
+// grading outside and above the nozzle in $yGrade$
+$$yGrade = 30
+$$yGradeC = 0.7
+//0.5
+
+$$xGradePipe = 0.5
+$$xNpipe = 35
+
+/*
+
+
+$$ xNconv = int(round(xN*lenConv/(lenConv+lenStra+lenDiv)))
+ // conv 
+ // fracMiddles: $fracMiddles$
+    hex (0 1 2 3 4 5 6 7) ($xNconv$ $yNcooler$ 1) simpleGrading (1 $yGradeC$ 1) 	// cooler
+    hex (10 11 1 0 8 9 5 4) ($xNconv$ $yNmid$ 1) simpleGrading (1 1 1)	// below cooler
+    hex (14 15 11 10 12 13 9 8) ($xNconv$ $yNgas$ 1) simpleGrading (1 1 1) // fuelAir
+    hex (18 19 15 14 16 17 13 12) ($xNconv$ $yNmid$ 1) simpleGrading (1 1 1) // below fuelAir
+    hex (22 23 19 18 20 21 17 16) ($xNconv$ $yNcarrier$ 1) simpleGrading (1 1 1) // carrier
+
+$$ xNstra = int(round(xN*lenStra/(lenConv+lenStra+lenDiv)))
+ // straight: 
+   // hex (22 23 19 18 20 21 17 16) (30 4 1) simpleGrading (1 1 1) // cooler
+    hex (1 26 27 2 5 24 25 6) ($xNstra$ $yNcooler$ 1) simpleGrading (1 $yGradeC$ 1) // cooler 
+    hex (11 29 26 1 9 28 24 5) ($xNstra$ $yNmid$ 1) simpleGrading (1 1 1) // below cooler
+    hex (15 31 29 11 13 30 28 9) ($xNstra$ $yNgas$ 1) simpleGrading (1 1 1) // fuelAir
+    hex (19 33 31 15 17 32 30 13) ($xNstra$ $yNmid$ 1) simpleGrading (1 1 1) // below fuelAir 
+    hex (23 35 33 19 21 34 32 17) ($xNstra$ $yNcarrier$ 1) simpleGrading (1 1 1) // carrier
+
+ // 24 25 27 26 cooler right, 25 6 2 27 cooler top, 5 6 25 24 cooler front, 2 1 26 27 cooler back
+ // 26 29 28 24 below cooler right, 1 11 29 26 below cooler back, 9 5 24 28 below cooler front
+ // 29 31 30 28 fuelAir right, 11 15 31 29 fuelAir back, 13 9 28 30 fuelAir front
+ // 31 33 32 30 below fuelAir right, 15 19 33 31 below fuelAir back, 17 13 30 32 below fuelAir front
+ // 33 35 34 32 carrier right, 19 23 35 33 carrier back, 21 17 32 34 carrier front, 23 21 34 35 cooler bot 
+
+$$ xNdiv = int(round(xN*lenDiv/(lenConv+lenStra+lenDiv)))
+ // div:
+    hex (26 38 39 27 24 36 37 25) ($xNdiv$ $yNcooler$ 1) simpleGrading (1 $yGradeC$ 1) // cooler
+    hex (29 41 38 26 28 40 36 24) ($xNdiv$ $yNmid$ 1) simpleGrading (1 1 1) // below cooler
+    hex (31 43 41 29 30 42 40 28) ($xNdiv$ $yNgas$ 1) simpleGrading (1 1 1) // fuelAir
+    hex (33 45 43 31 32 44 42 30) ($xNdiv$ $yNmid$ 1) simpleGrading (1 1 1) // below fuelAir
+    hex (35 47 45 33 34 46 44 32) ($xNdiv$ $yNcarrier$ 1) simpleGrading (1 1 1) // carrier
+
+*/
+ // fronts: go left in second half, backs: go right in first half
+ // 27 26 38 39 cooler back, 24 25 37 36 cooler front, 39 27 25 37 cooler top, 37 39 38 36 right 
+ // 26 29 41 38 below cooler back, 24 36 40 28 below cooler front, 36 38 41 40 right
+ // 29 31 43 41 fuelAir back, 30 28 40 42 fuelAir front, 40 41 43 42 right
+ // 31 33 45 43 below fuelAir back, 32 30 42 44 below fuelAir front, 42 43 45 44 right, 
+ // 33 35 47 45 carrier back, 34 32 44 46 carrier front, 35 47 46 34 carrier bot, 44 45 46 47 right
+/*
+ // outlet:
+    hex (38 50 51 39 36 48 49 37) ($xNout$ $yNcooler$ 1) simpleGrading ($xGrade$ $yGradeC$ 1) // cooler    
+    hex (41 53 50 38 40 52 48 36) ($xNout$ $yNmid$ 1) simpleGrading ($xGrade$ 1 1) // below cooler
+    hex (43 55 53 41 42 54 52 40) ($xNout$ $yNgas$ 1) simpleGrading ($xGrade$ 1 1) // fuelAir
+    hex (45 57 55 43 44 56 54 42) ($xNout$ $yNmid$ 1) simpleGrading ($xGrade$ 1 1) // below fuelAir
+    hex (47 59 57 45 46 58 56 44) ($xNout$ $yNcarrier$ 1) simpleGrading ($xGrade$ 1 1) // carrier
+*/
+ // 38 50 51 39 cooler back, 37 49 48 36 cooler front, 51 39 49 37 cooler top, 48 49 51 50 cooler right
+ // 41 53 50 38 below cooler back, 36 48 52 40 below cooler front, 52 48 50 53 below cooler right
+ // 43 55 53 41 fuelAir back, 40 52 54 42 fuelAir front, 54 52 53 55 fuelAir right
+ // 45 57 55 43 below fuelAir back, 42 54 56 44 below fuelAir front, 56 54 55 57 below fuelAir right
+ // 47 59 57 45 carrier back, 44 56 58 46 carrier front, 59 47 46 58 carrier bot, 58 56 57 59 carrier right
+     
+// back: 51 39 47 59, front: 58 46 37 49, left: 49 51 59 58, right: 46 47 39 37
+    hex (51 39 47 59 49 37 46 58) (80 20 1) simpleGrading (1 1 1)
+
+      // hex (51 39 47 59 49 37 46 58) ($xNout$ $yNnozzleOut$ 1) simpleGrading ($xGrade$ $yNozzleGrading$ 1) 
+    //hex (39 47 59 51 58 49 37 46) (3 3 1) simpleGrading (1 1 1)
+    //hex (46 37 49 58 51 59 47 39) (5 5 1) simpleGrading (1 1 1)
+    //hex (39 47 59 51 58 49 37 46) (2 2 1) simpleGrading (1 1 1)
+ // outlet front: 46 37 49 58, outlet back 39 47 59 51, outlet left: 46 47 39 37, outlet right 49 51 59 58, outlet bot: 59 47 46 58
+
+
+ // nozzle thickness part
+    hex (39 51 62 63 37 49 60 61) (80 20 1) simpleGrading (1 1 1) // MODIFIED
+   // hex (39 51 62 63 37 49 60 61) ($xNout$ $yNnozzleOut$ 1) simpleGrading ($xGrade$ $yNozzleGrading$ 1) 
+ // 39 51 62 63 back, 61 60 49 37 front, 49 60 62 51 right, 39 63 61 37 left, 60 61 63 62 top
+/*
+ // cooler pipe
+    hex (66 0 3 67 64 4 7 65) ($xNpipe$ $yNcooler$ 1) simpleGrading ($xGradePipe$ $yGradeC$ 1)
+ // 66 0 3 67 back, 65 7 4 64 front, 66 67 65 64 left, 0 66 64 4 bot, 3 67 65 7 top
+ // fuelAir pipe
+    hex (70 14 10 71 68 12 8 69) ($xNpipe$ $yNgas$ 1) simpleGrading ($xGradePipe$ 1 1)
+ // 70 14 10 71 back, 69 8 12 68 front, 70 71 69 68 left, 14 70 68 12 bot, 8 69 71 10 top
+ // carrier pipe
+    hex (74 22 18 75 72 20 16 73) ($xNpipe$ $yNcarrier$ 1) simpleGrading ($xGradePipe$ 1 1)
+ // 74 22 18 75 back, 73 16 20 72 front, 74 75 73 72 left, 22 74 72 20 bot, 16 73 75 18 top
+*/
+ // outlet
+    //hex (63 62 78 79 61 60 76 77)($xNout$ $yNout$ 1) simpleGrading ($xGrade$ $yGrade$ 1) 
+    hex (63 62 78 79 61 60 76 77)(80 20 1) simpleGrading (1 1 1)  // MODIFIED
+ // 63 62 78 79 back, 77 76 60 61 front, 63 61 77 79 left, 78 79 77 76 top, 76 60 62 78 right
+
+);
+
+edges
+(
+);
+
+boundary
+(
+    cooler
+    {
+        type patch;
+        faces
+        (
+// conv
+	//    (4 0 3 7)   // cooler left
+// cooler pipe
+	 //   (66 67 65 64) // left
+        );
+    }
+    fuelAir
+    {
+        type patch;
+        faces
+        (
+// conv
+	//    (12 14 10 8) // fuelAir left
+// fuelAir pipe
+          //  (70 71 69 68) // left
+
+        );
+    }
+    carrier
+    {
+
+	type patch;
+	faces
+	(
+
+// conv	
+	//    (20 22 18 16) // carrier left
+// carrier pipe
+	//    (74 75 73 72) // left
+
+	);
+    }
+    walls
+    {
+	type wall;
+	faces
+        (
+/*
+// conv
+	    (7 3 2 6) // cooler top
+// straight
+	    (25 6 2 27)  // cooler top
+// div
+            (39 27 25 37) //cooler top */
+
+        );
+    }
+    midWalls
+    {
+	type wall;
+	faces
+        (
+
+// outlet
+/*
+	    
+	    (48 49 51 50) // cooler right
+	    (52 48 50 53) // below cooler right
+	    (54 52 53 55) // fuelAir right
+	    (56 54 55 57) // below fuelAir right
+	    (58 56 57 59) // carrier right
+	    */
+
+
+/*
+// conv	
+	   (8 10 0 4) // below cooler left
+
+	   (16 18 14 12) // below fuelAir left
+// cooler pipe
+ 	   (0 66 64 4) // bot 
+	   (3 67 65 7) // top
+// fuelAir pipe
+	   (14 70 68 12) // bot
+	   (8 69 71 10) // top
+// carrier pipe	    
+	   (16 73 75 18) // top*/
+// nozzle thickness
+        (39 63 61 37) // above outlet left
+	(49 60 62 51) // nozzle thickness right
+
+// nozzle outlet right
+	(46 47 39 37)
+	(76 60 62 78) // above outlet right
+
+        );
+    }
+    outlet
+    {
+        type patch;
+        faces
+        (
+// conv
+//     	    (7 3 2 6) // cooler top
+/*            (1 5 6 2) // cooler right (was in wrong circulation)
+	    (1 11 9 5)	// below cooler right
+	    (15 11 9 13) // fuelAir right
+	    (13 15 19 17) // below fuelAir right
+	    (17 19 23 21) // carrier right*/
+// straight 
+/*	    (24 25 27 26) // cooler right
+	    (26 29 28 24) // below cooler right
+	    (29 31 30 28) // fuelAir right
+	    (31 33 32 30) // below fuelAir right
+	    (33 35 34 32) // carrier right*/
+// outlet
+	//(60 61 63 62) // nozzle thickness top
+
+	    (63 61 77 79) // left
+	    (78 79 77 76) // top
+
+
+        );
+    }
+/*
+    divOutlet
+    {
+
+	type wall;
+	faces
+	(*/
+		/*
+		// div
+
+	    (37 39 38 36) // cooler
+	    (36 38 41 40) // below cooler
+	    (40 41 43 42) // fuelAir
+	    (42 43 45 44) // below fuelAir
+	    (44 45 47 46) // carrier
+
+
+	    //(52 48 50 53) // below cooler right
+	    //(54 52 53 55) // fuelAir right
+	    //(56 54 55 57) // below fuelAir right*/
+/*	);
+    }*/
+    outsideInlet
+    {
+	type empty;
+	faces
+	(
+		// div
+	     (49 51 59 58)
+
+	   // OLD(51 59 58 49) // nozzle outlet left
+	);
+    }
+    symmetric
+    {
+	type symmetryPlane;
+	faces
+	(
+//	    (0 4 5 1) 	//  cooler bot
+// 	    (11 10 8 9) // below cooler bot
+//	    (15 14 12 13) // fuelAir bot
+//	    (17 19 18 16) // below fuelAir bot
+/*
+// conv
+	    (23 22 20 21) // carrier bot
+// straight
+	    (23 21 34 35) // carrier bot 
+	   // (11 15 13 9) //fuelAir right
+// div
+            (35 47 46 34) // carrier bot
+*/
+// outlet
+	    (59 47 46 58) // carrier bot
+/*
+// carrier pipe
+	   (22 74 72 20) // bot */
+
+	);
+    }
+
+
+
+    frontAndBack
+    {
+        type empty;
+        faces
+        (
+/*
+// conv
+            (5 4 7 6)	// cooler front
+//            (0 1 2 3)	// cooler back
+
+//            (1 0 10 11) // below cooler back
+	    (9 8 4 5) 	// below cooler front
+
+            (13 12 8 9) // fuelAir front
+//	    (11 10 14 15) // fuelAir back
+
+            (17 16 12 13) // below fuelAir front
+//	    (15 14 18 19) // below fuelAir back
+
+ 	    (21 20 16 17) // carrier front
+//	    (19 18 22 23) // carrier back
+// straight
+//	    (2 1 26 27)  // cooler back
+	    (5 6 25 24)  // cooler front
+//	    (1 11 29 26) // below cooler back
+	    (9 5 24 28)  // below cooler front
+ //	    (11 15 31 29) // fuelAir back
+	    (13 9 28 30)  // fuelAir front
+//	    (15 19 33 31) // below fuelAir back
+	    (17 13 30 32) // below fuelAir front
+//	    (19 23 35 33) // carrier back
+	    (21 17 32 34) // carrier front
+// div
+//            (27 26 38 39) // cooler back, 
+	    (24 25 37 36) // cooler front
+//	    (26 29 41 38) // below cooler back 
+	    (24 36 40 28) // below cooler front
+// 	    (29 31 43 41) // fuelAir back
+	    (30 28 40 42) // fuelAir front
+//   	    (31 33 45 43) // below fuelAir back 
+	    (32 30 42 44) // below fuelAir front 
+// 	    (33 35 47 45) // carrier back
+	    (34 32 44 46) // carrier front
+*/
+// outlet nozzle
+/*
+	    (37 49 48 36) // cooler front
+//	    (38 50 51 39) // cooler back,
+// 	    (41 53 50 38) // below cooler back
+	    (36 48 52 40) // below cooler front
+// 	    (43 55 53 41) // fuelAir back 
+	    (40 52 54 42) // fuelAir front
+// 	    (45 57 55 43) // below fuelAir back
+	    (42 54 56 44) // below fuelAir front
+// 	    (47 59 57 45) // carrier back
+	    (44 56 58 46) // carrier front 
+*/
+// nozzle thickess
+
+//	    (39 51 62 63) // nozzle thickness back
+	    (61 60 49 37) // nozzle thickness front,
+
+/*
+// cooler pipe 
+//  	    (66 0 3 67) // back 
+	    (65 7 4 64) // front,
+// fuelAir pipe
+//	    (70 14 10 71) // back
+	    (69 8 12 68) // front
+// carrier pipe
+//	    (74 22 18 75) // back
+	    (73 16 20 72) // front
+*/
+// upper outlet
+//            (63 62 78 79) // back 
+	    (77 76 60 61) //front
+
+// nozzle outlet back: 51 39 47 59, front: 58 46 37 49,
+	    (58 46 37 49)
+
+      /*  );
+    }
+    back
+    {
+        type empty;
+        faces
+        (*/
+/*
+// conv
+//            (5 4 7 6)	// cooler front
+            (0 1 2 3)	// cooler back
+
+            (1 0 10 11) // below cooler back
+//	    (9 8 4 5) 	// below cooler front
+
+//            (13 12 8 9) // fuelAir front
+	    (11 10 14 15) // fuelAir back
+
+//            (17 16 12 13) // below fuelAir front
+	    (15 14 18 19) // below fuelAir back
+
+// 	    (21 20 16 17) // carrier front
+	    (19 18 22 23) // carrier back
+// straight
+	    (2 1 26 27)  // cooler back
+//	    (5 6 25 24)  // cooler front
+	    (1 11 29 26) // below cooler back
+//	    (9 5 24 28)  // below cooler front
+ 	    (11 15 31 29) // fuelAir back
+//	    (13 9 28 30)  // fuelAir front
+	    (15 19 33 31) // below fuelAir back
+//	    (17 13 30 32) // below fuelAir front
+	    (19 23 35 33) // carrier back
+//	    (21 17 32 34) // carrier front
+// div
+            (27 26 38 39) // cooler back, 
+//	    (24 25 37 36) // cooler front
+	    (26 29 41 38) // below cooler back 
+//	    (24 36 40 28) // below cooler front
+ 	    (29 31 43 41) // fuelAir back
+//	    (30 28 40 42) // fuelAir front
+   	    (31 33 45 43) // below fuelAir back 
+//	    (32 30 42 44) // below fuelAir front 
+ 	    (33 35 47 45) // carrier back
+//	    (34 32 44 46) // carrier front
+*/
+// outlet nozzle
+/*
+//	    (37 49 48 36) // cooler front
+	    (38 50 51 39) // cooler back,
+ 	    (41 53 50 38) // below cooler back
+//	    (36 48 52 40) // below cooler front
+ 	    (43 55 53 41) // fuelAir back 
+//	    (40 52 54 42) // fuelAir front
+ 	    (45 57 55 43) // below fuelAir back
+//	    (42 54 56 44) // below fuelAir front
+ 	    (47 59 57 45) // carrier back
+//	    (44 56 58 46) // carrier front 
+*/
+
+
+	    (39 51 62 63) // nozzle thickness back
+//	    (61 60 49 37) // nozzle thickness front,
+
+/*
+
+// cooler pipe 
+  	    (66 0 3 67) // back 
+//	    (65 7 4 64) // front,
+// fuelAir pipe
+	    (70 14 10 71) // back
+//	    (69 8 12 68) // front
+// carrier pipe
+	    (74 22 18 75) // back
+//	    (73 16 20 72) // front
+*/
+// upper outlet
+            (63 62 78 79) // back 
+//	    (77 76 60 61) //front
+
+// nozzle outlet back: 51 39 47 59, front: 58 46 37 49,
+	    (51 39 47 59) 
+        );
+    }
+
+
+
+
+/*
+
+
+
+    front
+    {
+        type empty;
+        faces
+        (
+// conv
+            (5 4 7 6)	// cooler front
+//            (0 1 2 3)	// cooler back
+
+//            (1 0 10 11) // below cooler back
+	    (9 8 4 5) 	// below cooler front
+
+            (13 12 8 9) // fuelAir front
+//	    (11 10 14 15) // fuelAir back
+
+            (17 16 12 13) // below fuelAir front
+//	    (15 14 18 19) // below fuelAir back
+
+ 	    (21 20 16 17) // carrier front
+//	    (19 18 22 23) // carrier back
+// straight
+//	    (2 1 26 27)  // cooler back
+	    (5 6 25 24)  // cooler front
+//	    (1 11 29 26) // below cooler back
+	    (9 5 24 28)  // below cooler front
+ //	    (11 15 31 29) // fuelAir back
+	    (13 9 28 30)  // fuelAir front
+//	    (15 19 33 31) // below fuelAir back
+	    (17 13 30 32) // below fuelAir front
+//	    (19 23 35 33) // carrier back
+	    (21 17 32 34) // carrier front
+// div
+//            (27 26 38 39) // cooler back, 
+	    (24 25 37 36) // cooler front
+//	    (26 29 41 38) // below cooler back 
+	    (24 36 40 28) // below cooler front
+// 	    (29 31 43 41) // fuelAir back
+	    (30 28 40 42) // fuelAir front
+//   	    (31 33 45 43) // below fuelAir back 
+	    (32 30 42 44) // below fuelAir front 
+// 	    (33 35 47 45) // carrier back
+	    (34 32 44 46) // carrier front
+
+// outlet nozzle
+	    (37 49 48 36) // cooler front
+//	    (38 50 51 39) // cooler back,
+// 	    (41 53 50 38) // below cooler back
+	    (36 48 52 40) // below cooler front
+// 	    (43 55 53 41) // fuelAir back 
+	    (40 52 54 42) // fuelAir front
+// 	    (45 57 55 43) // below fuelAir back
+	    (42 54 56 44) // below fuelAir front
+// 	    (47 59 57 45) // carrier back
+	    (44 56 58 46) // carrier front 
+
+// nozzle thickess
+
+//	    (39 51 62 63) // nozzle thickness back
+	    (61 60 49 37) // nozzle thickness front,
+
+
+// cooler pipe 
+//  	    (66 0 3 67) // back 
+	    (65 7 4 64) // front,
+// fuelAir pipe
+//	    (70 14 10 71) // back
+	    (69 8 12 68) // front
+// carrier pipe
+//	    (74 22 18 75) // back
+	    (73 16 20 72) // front
+// upper outlet
+//            (63 62 78 79) // back 
+	    (77 76 60 61) //front
+
+
+        );
+    }
+    back
+    {
+        type empty;
+        faces
+        (
+// conv
+//            (5 4 7 6)	// cooler front
+            (0 1 2 3)	// cooler back
+
+            (1 0 10 11) // below cooler back
+//	    (9 8 4 5) 	// below cooler front
+
+//            (13 12 8 9) // fuelAir front
+	    (11 10 14 15) // fuelAir back
+
+//            (17 16 12 13) // below fuelAir front
+	    (15 14 18 19) // below fuelAir back
+
+// 	    (21 20 16 17) // carrier front
+	    (19 18 22 23) // carrier back
+// straight
+	    (2 1 26 27)  // cooler back
+//	    (5 6 25 24)  // cooler front
+	    (1 11 29 26) // below cooler back
+//	    (9 5 24 28)  // below cooler front
+ 	    (11 15 31 29) // fuelAir back
+//	    (13 9 28 30)  // fuelAir front
+	    (15 19 33 31) // below fuelAir back
+//	    (17 13 30 32) // below fuelAir front
+	    (19 23 35 33) // carrier back
+//	    (21 17 32 34) // carrier front
+// div
+            (27 26 38 39) // cooler back, 
+//	    (24 25 37 36) // cooler front
+	    (26 29 41 38) // below cooler back 
+//	    (24 36 40 28) // below cooler front
+ 	    (29 31 43 41) // fuelAir back
+//	    (30 28 40 42) // fuelAir front
+   	    (31 33 45 43) // below fuelAir back 
+//	    (32 30 42 44) // below fuelAir front 
+ 	    (33 35 47 45) // carrier back
+//	    (34 32 44 46) // carrier front
+
+// outlet nozzle
+//	    (37 49 48 36) // cooler front
+	    (38 50 51 39) // cooler back,
+ 	    (41 53 50 38) // below cooler back
+//	    (36 48 52 40) // below cooler front
+ 	    (43 55 53 41) // fuelAir back 
+//	    (40 52 54 42) // fuelAir front
+ 	    (45 57 55 43) // below fuelAir back
+//	    (42 54 56 44) // below fuelAir front
+ 	    (47 59 57 45) // carrier back
+//	    (44 56 58 46) // carrier front 
+	    (39 51 62 63) // nozzle thickness back
+//	    (61 60 49 37) // nozzle thickness front,
+
+
+// cooler pipe 
+  	    (66 0 3 67) // back 
+//	    (65 7 4 64) // front,
+// fuelAir pipe
+	    (70 14 10 71) // back
+//	    (69 8 12 68) // front
+// carrier pipe
+	    (74 22 18 75) // back
+//	    (73 16 20 72) // front
+// upper outlet
+            (63 62 78 79) // back 
+//	    (77 76 60 61) //front
+
+
+        );
+    }*/
+/*
+    frontAndBack
+    {
+        type empty;
+        faces
+        (
+// conv
+            (5 4 7 6)	// cooler front
+            (0 1 2 3)	// cooler back
+
+            (1 0 10 11) // below cooler back
+	    (9 8 4 5) 	// below cooler front
+
+            (13 12 8 9) // fuelAir front
+	    (11 10 14 15) // fuelAir back
+
+            (17 16 12 13) // below fuelAir front
+	    (15 14 18 19) // below fuelAir back
+
+ 	    (21 20 16 17) // carrier front
+	    (19 18 22 23) // carrier back
+// straight
+	    (2 1 26 27)  // cooler back
+	    (5 6 25 24)  // cooler front
+	    (1 11 29 26) // below cooler back
+	    (9 5 24 28)  // below cooler front
+ 	    (11 15 31 29) // fuelAir back
+	    (13 9 28 30)  // fuelAir front
+	    (15 19 33 31) // below fuelAir back
+	    (17 13 30 32) // below fuelAir front
+	    (19 23 35 33) // carrier back
+	    (21 17 32 34) // carrier front
+// div
+            (27 26 38 39) // cooler back, 
+	    (24 25 37 36) // cooler front
+	    (26 29 41 38) // below cooler back 
+	    (24 36 40 28) // below cooler front
+ 	    (29 31 43 41) // fuelAir back
+	    (30 28 40 42) // fuelAir front
+   	    (31 33 45 43) // below fuelAir back 
+	    (32 30 42 44) // below fuelAir front 
+ 	    (33 35 47 45) // carrier back
+	    (34 32 44 46) // carrier front
+
+// outlet nozzle
+	    (37 49 48 36) // cooler front
+	    (38 50 51 39) // cooler back,
+ 	    (41 53 50 38) // below cooler back
+	    (36 48 52 40) // below cooler front
+ 	    (43 55 53 41) // fuelAir back 
+	    (40 52 54 42) // fuelAir front
+ 	    (45 57 55 43) // below fuelAir back
+	    (42 54 56 44) // below fuelAir front
+ 	    (47 59 57 45) // carrier back
+	    (44 56 58 46) // carrier front 
+	    (39 51 62 63) // nozzle thickness back
+	    (61 60 49 37) // nozzle thickness front,
+
+
+// cooler pipe 
+  	    (66 0 3 67) // back 
+	    (65 7 4 64) // front,
+// fuelAir pipe
+	    (70 14 10 71) // back
+	    (69 8 12 68) // front
+// carrier pipe
+	    (74 22 18 75) // back
+	    (73 16 20 72) // front
+// upper outlet
+            (63 62 78 79) // back 
+	    (77 76 60 61) //front
+
+
+        );
+    }//*/
+);
+
+mergePatchPairs
+(
+	//(divOutlet outsideInlet)
+	//(outsideInlet divOutlet)
+);
+
+// ************************************************************************* //
