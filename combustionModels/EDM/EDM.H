@@ -56,7 +56,10 @@ class EDM
     // Private data
 
         //- Model constant
+	scalar xIgnition_;
         scalar C_;
+	Time& runTime_;
+	//volScalarField rDeltaT_;
 
 
     // Private Member Functions

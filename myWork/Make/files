@@ -1,3 +1,4 @@
 tatunRNG/tatunRNG.c
+mixtures/basicMultiComponentMixture/basicMultiComponentMixture.C
 
 LIB = $(FOAM_USER_LIBBIN)/libmyWork

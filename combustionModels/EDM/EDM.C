@@ -24,6 +24,7 @@ License
 
 #include "EDM.H"
 #include "wallFvPatch.H"
+#include "addToRunTimeSelectionTable.H"
 namespace Foam
 {
 namespace combustionModels
@@ -38,13 +39,29 @@ EDM<CombThermoType, ThermoType>::EDM
 )
 :
     singleStepCombustion<CombThermoType, ThermoType>(modelType, mesh),
-    C_(readScalar(this->coeffs().lookup("C")))
+    //xIgnition_(readScalar(this->coeffs().lookupOrDefault("xIgnition",-0.0156))),
+    xIgnition_(this->coeffs().lookupOrDefault("xIgnition",-0.0156)),
+    C_(readScalar(this->coeffs().lookup("C"))),
+    //runTime_(this->rho().time())
+    /*rDeltaT_
+    (
+    	IOobject
+	(
+	    "rDeltaT",
+	    runTime_.timeName(),
+	    mesh,
+	    IOobject::MUST_READ,//MUST_READ,
+	    IOobject::AUTO_WRITE//NO_WRITE
+	),
+        mesh
+    )*/
 /*    singleMixture_
     (
         dynamic_cast<singleStepReactingMixture<ThermoType>&>(this->thermo())
     )*/
-{}
-
+{
+    Info << "xIgnition = " << xIgnition_ << endl;
+}
 
 // * * * * * * * * * * * * * * * * Destructors * * * * * * * * * * * * * * * //
 
@@ -62,6 +79,7 @@ void EDM<CombThermoType, ThermoType>::correct()
         dimensionedScalar("zero", dimMass/pow3(dimLength)/dimTime, 0.0);
 // tatu start
 
+
     tmp<volScalarField> trho(this->rho());
     const volScalarField& rho = trho();
     tmp<volScalarField> tepsilon(this->turbulence().epsilon());
@@ -73,6 +91,10 @@ void EDM<CombThermoType, ThermoType>::correct()
 
     tmp<volScalarField> tx(this->mesh().C().component(0));
     const volScalarField x = tx();
+
+    //tmp<volScalarField> trDeltaTs(this->rDeltaTs());
+    //const volScalarField& rDeltaTs = rDeltaTs();
+    //const volScalarField& rDeltaTs = this->rDeltaT();
     //const volScalarField& invTauTurb = epsilon/k;
 
     //const volScalarField& tau = this->turbulence().epsilon()/this->turbulence().k();
@@ -181,7 +203,8 @@ void EDM<CombThermoType, ThermoType>::correct()
 			//min(Ataui,1.0/(dt*C_))*rho[i]*min(YminReactants, B*YsumP);
 			//Atauimu*rho[i]*min(YFueli, YO2si);
 			//Ataui*rhoi*min(YFueli, YO2si);
-		if (x[i] < -1.56e-2)  // no combustion in the inlet pipe
+		//if (x[i] < -1.56e-2)  // no combustion in the inlet pipe
+		if (x[i] < xIgnition_)  // no combustion in the inlet pipe
 		{
 			this->wFuel_[i] = 0.0;
 		}
@@ -204,12 +227,15 @@ bool EDM<CombThermoType, ThermoType>::read()
     if (singleStepCombustion<CombThermoType, ThermoType>::read())
     {
         this->coeffs().lookup("C") >> C_ ;
+        this->coeffs().lookup("xIgnition") >> xIgnition_ ;
         return true;
     }
     else
     {
+//	xIgnite_ = -1.56e-2 ;
         return false;
     }
+  //  Info << "ignition x-coordinate: " << xIgnite_ << endl;
 }
 
 

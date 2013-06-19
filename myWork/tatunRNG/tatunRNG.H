@@ -94,11 +94,7 @@ protected:
             volScalarField epsilon_;
             volScalarField mut_;
             volScalarField alphat_;
-
 	    volScalarField soundSpeed_;
-	    /*volScalarField Tnew_;
-	    volScalarField Cp_;*/
-
 
 public:
 
@@ -114,7 +110,6 @@ public:
             const volVectorField& U,
             const surfaceScalarField& phi,
             const basicThermo& thermophysicalModel,
-	    //const volScalarField& M,
             const word& turbulenceModelName = turbulenceModel::typeName,
             const word& modelName = typeName
         );
@@ -169,6 +164,10 @@ public:
             return epsilon_;
         }
 
+	virtual tmp<volScalarField> soundSpeed() const
+	{
+		return soundSpeed_;
+	}
         //- Return the Reynolds stress tensor
         virtual tmp<volSymmTensorField> R() const;
 
@@ -185,18 +184,7 @@ public:
         virtual bool read();
 
 	
-	virtual tmp<volScalarField> soundSpeed() const
-	{
-		return soundSpeed_;
-	}
-	/*virtual tmp<volScalarField> Tnew() const
-	{
-		return Tnew_;
-	}
-	virtual tmp<volScalarField> Cp() const
-	{
-		return Cp_;
-	}*/
+
 };
 
 

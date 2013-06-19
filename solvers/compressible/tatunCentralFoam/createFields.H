@@ -278,10 +278,12 @@ volScalarField soundSpeed
         "soundSpeed",
         runTime.timeName(),
         mesh,
-        IOobject::NO_READ,
+        IOobject::MUST_READ,
         IOobject::AUTO_WRITE
-    ),
-    mag(U)*0.0
+    ),    
+    mesh,
+    dimensionedScalar("soundSpeed",dimensionSet(0,1,-1,0,0),0.0)
+    //mag(U)*0.0
 );
 volScalarField h 
 (
@@ -335,5 +337,17 @@ surfaceScalarField phiHbyA // rUA stored for fixedFluxPressure BC
 	 //dimensionedScalar("rUA", dimTime, 1),
 	 dimensionedScalar("phiHbyA",dimensionSet(1,0,-1,0,0),1)
 	// zeroGradientFvPatchScalarField::typeName
+);
+volScalarField kPerEpsilon
+(
+    IOobject
+    (
+        "kPerEpsilon",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    turbulence->k()/turbulence->epsilon()
 );
 // tatu end

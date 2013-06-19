@@ -1,2 +1,3 @@
 OBJECTS = \
-$(OBJECTS_DIR)/tatunRNG.o
+$(OBJECTS_DIR)/tatunRNG.o\
+$(OBJECTS_DIR)/basicMultiComponentMixture.o

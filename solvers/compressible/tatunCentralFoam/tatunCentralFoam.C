@@ -48,12 +48,12 @@ Description
 int main(int argc, char *argv[])
 {
     #include "setRootCase.H"
-
     #include "createTime.H"
     #include "createMesh.H"
     #include "createFields.H"
     #include "readThermophysicalProperties.H"
     #include "readTimeControls.H"
+    #include "readLocalEuler.H"
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -172,7 +172,14 @@ int main(int argc, char *argv[])
 
         #include "compressibleCourantNo.H"
         #include "readTimeControls.H"
-        #include "setDeltaT.H"
+	if (useLocalEuler)
+	{
+		#include "setrDeltaT.H"
+	} 
+	else
+	{
+        	#include "setDeltaT.H"
+	}
 
         runTime++;
 
@@ -308,6 +315,7 @@ int main(int argc, char *argv[])
 
 	K = 0.5*magSqr(U);
 	h = thermo.Cp()*T + K;
+	kPerEpsilon = turbulence->k()/turbulence->epsilon();
 
         runTime.write();
 

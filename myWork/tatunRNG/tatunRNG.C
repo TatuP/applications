@@ -196,8 +196,8 @@ tatunRNG::tatunRNG
 	    "soundSpeed",
 	    runTime_.timeName(),
 	    mesh_,
-	    IOobject::MUST_READ,
-	    IOobject::NO_WRITE
+	    IOobject::MUST_READ,//MUST_READ,
+	    IOobject::AUTO_WRITE//NO_WRITE
 	),
         mesh_
     )
