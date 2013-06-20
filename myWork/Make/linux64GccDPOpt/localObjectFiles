@@ -1,3 +1,2 @@
 LOCAL_OBJECTS = \
-tatunRNG.o\
-basicMultiComponentMixture.o
+tatunRNG.o

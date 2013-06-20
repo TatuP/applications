@@ -1,3 +1,2 @@
 SOURCE = \
-tatunRNG/tatunRNG.c\
-mixtures/basicMultiComponentMixture/basicMultiComponentMixture.C
+tatunRNG/tatunRNG.c

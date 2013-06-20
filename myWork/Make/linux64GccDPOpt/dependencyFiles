@@ -1,3 +1,2 @@
 DEPENDENCIES = \
-tatunRNG/tatunRNG.dep\
-mixtures/basicMultiComponentMixture/basicMultiComponentMixture.dep
+tatunRNG/tatunRNG.dep
